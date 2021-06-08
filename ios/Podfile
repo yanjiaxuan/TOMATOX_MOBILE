@@ -12,6 +12,20 @@ target 'TOMATOX_MOBILE' do
     :hermes_enabled => false
   )
 
+  pod 'react-native-pager-view', :path => '../node_modules/react-native-pager-view'
+
+  pod 'react-native-slider', :path => '../node_modules/@react-native-community/slider'
+
+  pod 'react-native-segmented-control', :path => '../node_modules/@react-native-community/segmented-control'
+
+  pod 'react-native-cameraroll', :path => '../node_modules/@react-native-community/cameraroll'
+
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
+
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
+  pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
+
   target 'TOMATOX_MOBILETests' do
     inherit! :complete
     # Pods for testing
