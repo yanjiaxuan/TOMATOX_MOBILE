@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     FlatList,
-    Image,
+    Image, Keyboard,
     SafeAreaView,
     ScrollView,
     StyleSheet,
@@ -26,7 +26,8 @@ export default class Recommend extends React.Component<any, any>{
         this.state = {
             classifyList: [],
             selectedTabIdx: -1,
-            resourceList: []
+            resourceList: [],
+            haveMoreData: true
         }
     }
 
@@ -35,22 +36,41 @@ export default class Recommend extends React.Component<any, any>{
     }
 
     private searchRes() {
+        Keyboard.dismiss()
         console.log(keyWords);
     }
 
-    private changeType(typeId: number) {
+    private changeType() {
         this.curPage = 0
+        this.pageCount = 10
+        this.setState({
+            resourceList: [],
+            haveMoreData: true
+        }, this.getMoreData)
+    }
+
+    private getMoreData() {
+        const typeId = this.state.selectedTabIdx
         let prom;
         if (typeId === -1) {
             prom = queryResources(++this.curPage, undefined, undefined, 24)
         } else {
             prom = queryResources(++this.curPage, typeId)
         }
+        if (this.curPage >= this.pageCount) {
+            this.setState({
+                haveMoreData: false
+            })
+            return
+        }
         prom.then((res: any) => {
             const {pagecount, list} = res
             this.pageCount =  pagecount
             this.setState({
-                resourceList: filterResources(list)
+                resourceList: [
+                    ...this.state.resourceList,
+                    ...filterResources(list)
+                ]
             })
         })
     }
@@ -61,14 +81,14 @@ export default class Recommend extends React.Component<any, any>{
             this.setState({
                 classifyList: res
             })
-            this.changeType(-1)
+            this.changeType()
         });
     }
 
     render(): React.ReactNode {
         return (
             <SafeAreaView style={style.fullWrapper}>
-                <LinearGradient colors={['#232222', '#2b2b2b']} style={{height: 100}}>
+                <LinearGradient colors={['#232222', '#2b2b2b']} style={{height: 90}}>
                     <View style={style.titleBar}>
                         <Image source={TIcon} style={style.titleImg} />
                         <TextInput style={style.titleInput} placeholderTextColor={'#929292'} onChangeText={this.changeKW} placeholder={'电影、电视剧、综艺...'} />
@@ -76,7 +96,7 @@ export default class Recommend extends React.Component<any, any>{
                     </View>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                         {this.state.classifyList.map((item: any) => (
-                            <TouchableOpacity key={item.id} onPress={() => {this.switchTab(item.id)}}>
+                            <TouchableOpacity key={item.id} activeOpacity={1} onPress={() => {this.switchTab(item.id)}}>
                                 <Text style={[style.tabLabel, item.id === this.state.selectedTabIdx ? style.tabLabelActive: undefined]}>{item.name}</Text>
                             </TouchableOpacity>
                         ))}
@@ -85,7 +105,13 @@ export default class Recommend extends React.Component<any, any>{
                 <FlatList style={style.contentList}
                           data={this.state.resourceList}
                           numColumns={3}
-                          renderItem={({item}) => <TomatoxCard data={item} navigation={this.props.navigation} />} />
+                          onEndReached={() => { this.getMoreData() }}
+                          onEndReachedThreshold={0.7}
+                          renderItem={({item}) => <TomatoxCard data={item} navigation={this.props.navigation} />}
+                          ListFooterComponent={(
+                              <Text style={style.contentFooter}>{this.state.haveMoreData ? '正在加载数据...' : '到底啦~'}</Text>
+                          )}>
+                </FlatList>
             </SafeAreaView>
         );
     }
@@ -93,7 +119,7 @@ export default class Recommend extends React.Component<any, any>{
     private switchTab(id: any) {
         this.setState({
             selectedTabIdx: id
-        })
+        }, this.changeType)
     }
 }
 
@@ -107,7 +133,6 @@ const style = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        marginTop: 5,
     },
     titleImg: {
         width: 40,
@@ -137,12 +162,18 @@ const style = StyleSheet.create({
         paddingBottom: 5
     },
     tabLabelActive: {
+        color: '#ff5c49',
         borderBottomWidth: 4,
-        borderRadius: 2,
         borderBottomColor: '#ff5c49'
     },
     contentList: {
         flex: 1,
         padding: 7
+    },
+    contentFooter: {
+        textAlign: 'center',
+        color: '#f1f1f1',
+        height: 50,
+        lineHeight: 40
     }
 });

@@ -5,7 +5,6 @@ import Player from '../../views/player/player'
 export default createStackNavigator({
     Main: {
         screen: CustomTab,
-
     },
     Player: Player
 }, {
