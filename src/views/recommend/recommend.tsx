@@ -132,28 +132,29 @@ const style = StyleSheet.create({
         height: 60,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'flex-start',
+        justifyContent: 'space-between',
+        paddingLeft: 10,
+        paddingRight: 10
     },
     titleImg: {
         width: 40,
         height: 40,
-        marginLeft: 10,
         marginRight: 20,
     },
     titleInput: {
+        flex: 1,
         backgroundColor: 'rgba(128,128,128,0.69)',
-        width: '70%',
         height: 30,
         paddingTop: 0,
         paddingBottom: 0,
         borderRadius: 30,
         paddingLeft: 15,
         paddingRight: 15,
-        marginRight: 14,
+        marginRight: 15,
         color: '#f1f1f1'
     },
     titleText: {
-        color: '#f1f1f1'
+        color: '#f1f1f1',
     },
     tabLabel: {
         color: '#f1f1f1',
