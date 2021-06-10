@@ -1,34 +1,29 @@
 import React from 'react';
 import {
-    FlatList,
     Image, Keyboard,
     SafeAreaView,
-    ScrollView,
     StyleSheet,
     Text,
     TextInput,
-    TouchableOpacity,
     View,
 } from 'react-native';
 import TIcon from '../../images/png/tomatox.png';
-import {queryResources, queryTypes} from '../../utils/request';
-import LinearGradient from 'react-native-linear-gradient'
-import {filterResources} from "../../utils/filterResources";
-import TomatoxCard from '../../components/tomatox-card/tomatox-card'
+import {queryTypes} from '../../utils/request';
+import LinearGradient from 'react-native-linear-gradient';
+import {createMaterialTopTabNavigator} from 'react-navigation-tabs';
+import ClassifyList from './classify-list';
+import {createAppContainer} from 'react-navigation';
 let keyWords = '';
+let TabViewCache: any;
 
 export default class Recommend extends React.Component<any, any>{
-    private pageCount = 10
-    private curPage = 0
 
     constructor(props: any) {
         super(props);
         this.state = {
             classifyList: [],
             selectedTabIdx: -1,
-            resourceList: [],
-            haveMoreData: true
-        }
+        };
     }
 
     private changeKW(val: any) {
@@ -36,97 +31,83 @@ export default class Recommend extends React.Component<any, any>{
     }
 
     private searchRes() {
-        Keyboard.dismiss()
+        Keyboard.dismiss();
         console.log(keyWords);
     }
 
     private changeType() {
-        this.curPage = 0
-        this.pageCount = 10
-        this.setState({
-            resourceList: [],
-            haveMoreData: true
-        }, this.getMoreData)
     }
 
-    private getMoreData() {
-        const typeId = this.state.selectedTabIdx
-        let prom;
-        if (typeId === -1) {
-            prom = queryResources(++this.curPage, undefined, undefined, 24)
-        } else {
-            prom = queryResources(++this.curPage, typeId)
+    private generateRouterConf () {
+        const conf: any = {};
+        this.state.classifyList.forEach((item: any) => {
+            conf[item.name] = () => (<ClassifyList navigation={this.props.navigation} type={item.id} />);
+        });
+        return conf;
+    }
+
+    private createTabView() {
+        if (this.state.classifyList.length === 0) {
+            return <></>;
         }
-        if (this.curPage >= this.pageCount) {
-            this.setState({
-                haveMoreData: false
-            })
-            return
+        if (TabViewCache) {
+            return <TabViewCache />;
         }
-        prom.then((res: any) => {
-            const {pagecount, list} = res
-            this.pageCount =  pagecount
-            this.setState({
-                resourceList: [
-                    ...this.state.resourceList,
-                    ...filterResources(list)
-                ]
-            })
-        })
+        TabViewCache = createAppContainer(createMaterialTopTabNavigator(this.generateRouterConf(), {
+            lazy: true,
+            swipeEnabled: true,
+            tabBarPosition: 'top',
+            tabBarOptions: {
+                showLabel: true,
+                showIcon: false,
+                scrollEnabled: true,
+                activeTintColor: '#ff5c49',
+                labelStyle: {fontSize: 14},
+                indicatorStyle: {height: 4, backgroundColor: '#ff5c49', borderRadius: 20},
+                tabStyle: {width: 'auto', marginLeft: 5,marginRight:5, marginBottom: 3, padding: 0, height: 40},
+                style: { backgroundColor: 'transparent' },
+                pressColor: 'transparent',
+                pressOpacity: 0.7,
+            },
+        }));
+        return <TabViewCache />;
     }
 
     componentDidMount(): void {
         queryTypes().then(res => {
             res.unshift({id: -1, name: '最新'});
             this.setState({
-                classifyList: res
-            })
-            this.changeType()
+                classifyList: res,
+            });
+            this.changeType();
         });
     }
-
     render(): React.ReactNode {
         return (
             <SafeAreaView style={style.fullWrapper}>
-                <LinearGradient colors={['#232222', '#2b2b2b']} style={{height: 90}}>
+                <LinearGradient colors={['#232222', '#2b2b2b']} style={{height: 50}}>
                     <View style={style.titleBar}>
                         <Image source={TIcon} style={style.titleImg} />
                         <TextInput style={style.titleInput} placeholderTextColor={'#929292'} onChangeText={this.changeKW} placeholder={'电影、电视剧、综艺...'} />
                         <Text onPress={this.searchRes} style={style.titleText}>搜索</Text>
                     </View>
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                        {this.state.classifyList.map((item: any) => (
-                            <TouchableOpacity key={item.id} activeOpacity={1} onPress={() => {this.switchTab(item.id)}}>
-                                <Text style={[style.tabLabel, item.id === this.state.selectedTabIdx ? style.tabLabelActive: undefined]}>{item.name}</Text>
-                            </TouchableOpacity>
-                        ))}
-                    </ScrollView>
                 </LinearGradient>
-                <FlatList style={style.contentList}
-                          data={this.state.resourceList}
-                          numColumns={3}
-                          onEndReached={() => { this.getMoreData() }}
-                          onEndReachedThreshold={0.7}
-                          renderItem={({item}) => <TomatoxCard data={item} navigation={this.props.navigation} />}
-                          ListFooterComponent={(
-                              <Text style={style.contentFooter}>{this.state.haveMoreData ? '正在加载数据...' : '到底啦~'}</Text>
-                          )}>
-                </FlatList>
+                { this.createTabView() }
             </SafeAreaView>
         );
     }
 
     private switchTab(id: any) {
         this.setState({
-            selectedTabIdx: id
-        }, this.changeType)
+            selectedTabIdx: id,
+        }, this.changeType);
     }
 }
 
 const style = StyleSheet.create({
     fullWrapper: {
         backgroundColor: '#2b2b2b',
-        flex: 1
+        flex: 1,
     },
     titleBar: {
         height: 60,
@@ -134,7 +115,7 @@ const style = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingLeft: 10,
-        paddingRight: 10
+        paddingRight: 10,
     },
     titleImg: {
         width: 40,
@@ -151,7 +132,7 @@ const style = StyleSheet.create({
         paddingLeft: 15,
         paddingRight: 15,
         marginRight: 15,
-        color: '#f1f1f1'
+        color: '#f1f1f1',
     },
     titleText: {
         color: '#f1f1f1',
@@ -160,21 +141,11 @@ const style = StyleSheet.create({
         color: '#f1f1f1',
         marginLeft: 20,
         textAlign: 'center',
-        paddingBottom: 5
+        paddingBottom: 5,
     },
     tabLabelActive: {
         color: '#ff5c49',
         borderBottomWidth: 4,
-        borderBottomColor: '#ff5c49'
+        borderBottomColor: '#ff5c49',
     },
-    contentList: {
-        flex: 1,
-        padding: 7
-    },
-    contentFooter: {
-        textAlign: 'center',
-        color: '#f1f1f1',
-        height: 50,
-        lineHeight: 40
-    }
 });

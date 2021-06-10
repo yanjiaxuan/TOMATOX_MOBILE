@@ -57,6 +57,6 @@ export default createBottomTabNavigator({
         showIcon: true,
         style: style.tabBar,
         activeTintColor: '#ff5c49',
-        inactiveTintColor: '#f1f1f1',
+        inactiveTintColor: '#bdbdbd',
     }
 });
