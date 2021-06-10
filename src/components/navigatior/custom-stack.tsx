@@ -8,5 +8,6 @@ export default createStackNavigator({
     },
     Player: Player
 }, {
-    headerMode: 'none'
+    headerMode: 'none',
+    mode: 'card',
 })
