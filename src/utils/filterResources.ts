@@ -21,20 +21,27 @@ export function filterResource(resource: any): IplayResource {
         tag: resource.vod_tag,
         year: resource.vod_year,
         updateTime: resource.vod_time,
-        playList: filterPlayList(resource.vod_play_url)
+        playList: filterPlayList(resource.vod_play_url),
     };
 }
 
 function filterPlayList(listStr: string) {
-    const list = new Map<string, string>();
+    const res: { index: string[], mapper: Record<string, string> } = {
+        index: [],
+        mapper: {},
+    };
+
     const splitLists = listStr.split('$$$').filter(val => val.includes('.m3u'));
     if (splitLists.length) {
         splitLists[0].split('#').forEach(item => {
             const [key, val] = item.split('$');
-            key && val && list.set(key, val);
+            if (key && val) {
+                res.index.push(key);
+                res.mapper[key] = val;
+            }
         });
     }
-    return list;
+    return res;
 }
 
 // export function cleanResourceData(dataType: string, data: IplayResource): IplayResource {

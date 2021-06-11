@@ -1,8 +1,9 @@
 import React from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {useNavigation} from '@react-navigation/native'
 
 export default function tomatoxCard(props: { data: IplayResource, navigation: any }) {
-    const {navigate} = props.navigation;
+    const {navigate} = useNavigation();
     return (
         <TouchableOpacity style={style.card} activeOpacity={1} onPress={() => navigate('Player', props.data)}>
             <Image source={{uri: props.data.picture}} style={style.cardImg} resizeMode={'cover'} />

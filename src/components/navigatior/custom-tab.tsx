@@ -1,5 +1,4 @@
 import React from 'react';
-import {createBottomTabNavigator} from 'react-navigation-tabs';
 import Recommend from '../../views/recommend/recommend';
 import History from '../../views/history/history';
 import Collect from '../../views/collect/collect';
@@ -7,6 +6,10 @@ import Live from '../../views/live/live';
 import Setting from '../../views/setting/setting';
 import {StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import {NavigationContainer} from '@react-navigation/native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+
+const Tab = createBottomTabNavigator();
 
 const style = StyleSheet.create({
     tabBar: {
@@ -16,48 +19,36 @@ const style = StyleSheet.create({
     },
 });
 
-export default createBottomTabNavigator({
-    Recommend: {
-        screen: Recommend,
-        navigationOptions: {
-            title: '推荐',
-            tabBarIcon: ({tintColor}) => <Icon name={'fire'} size={16} color={tintColor} />,
-        },
-    },
-    Live: {
-        screen: Live,
-        navigationOptions: {
-            title: '直播',
-            tabBarIcon: ({tintColor}) => <Icon name={'play-circle'} size={16} color={tintColor} />,
-        },
-    },
-    Collect: {
-        screen: Collect,
-        navigationOptions: {
-            title: '收藏',
-            tabBarIcon: ({tintColor}) => <Icon name={'heart'} size={16} color={tintColor} />,
-        },
-    },
-    History: {
-        screen: History,
-        navigationOptions: {
-            title: '历史',
-            tabBarIcon: ({tintColor}) => <Icon name={'history'} size={16} color={tintColor} />,
-        },
-    },
-    Setting: {
-        screen: Setting,
-        navigationOptions: {
-            title: '设置',
-            tabBarIcon: ({tintColor}) => <Icon name={'cog'} size={16} color={tintColor} />,
-        },
-    },
-}, {
-    backBehavior: 'none',
-    tabBarOptions: {
-        showIcon: true,
-        style: style.tabBar,
-        activeTintColor: '#ff5c49',
-        inactiveTintColor: '#bdbdbd',
-    },
-});
+export default function customTab() {
+    return (
+        <Tab.Navigator
+            backBehavior={'none'}
+            tabBarOptions={{
+                style: style.tabBar,
+                activeTintColor: '#ff5c49',
+                inactiveTintColor: '#bdbdbd',
+            }}
+            >
+            <Tab.Screen name={'Recommend'} component={Recommend} options={{
+                title: '推荐',
+                tabBarIcon: ({color}) => <Icon name={'fire'} size={16} color={color} />,
+            }} />
+            <Tab.Screen name={'Live'} component={Live} options={{
+                title: '直播',
+                tabBarIcon: ({color}) => <Icon name={'play-circle'} size={16} color={color} />,
+            }} />
+            <Tab.Screen name={'Collect'} component={Collect} options={{
+                title: '收藏',
+                tabBarIcon: ({color}) => <Icon name={'heart'} size={16} color={color} />,
+            }} />
+            <Tab.Screen name={'History'} component={History} options={{
+                title: '历史',
+                tabBarIcon: ({color}) => <Icon name={'history'} size={16} color={color} />,
+            }} />
+            <Tab.Screen name={'Setting'} component={Setting} options={{
+                title: '设置',
+                tabBarIcon: ({color}) => <Icon name={'cog'} size={16} color={color} />,
+            }} />
+        </Tab.Navigator>
+    );
+}

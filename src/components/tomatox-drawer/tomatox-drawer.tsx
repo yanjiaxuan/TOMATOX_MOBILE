@@ -61,8 +61,8 @@ export default function tomatoxDrawer(props: { resource: IplayResource, curPlay:
                 <Text style={style.playInfoTitle2}>选集</Text>
                 <ScrollView style={{marginBottom: 120}}>
                     <View style={style.playItemWrapper}>
-                        {[...props.resource.playList.keys()].map(key => (
-                            <TouchableOpacity onPress={() => props.changePlay(key)}>
+                        {props.resource.playList.index.map(key => (
+                            <TouchableOpacity key={key} onPress={() => props.changePlay(key)}>
                                 <Text numberOfLines={1}
                                       ellipsizeMode={'tail'}
                                       style={[style.playItem, props.curPlay === key ? style.activePlayItem : undefined]}

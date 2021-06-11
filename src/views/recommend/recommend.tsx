@@ -10,11 +10,16 @@ import {
 import TIcon from '../../images/png/tomatox.png';
 import {queryTypes} from '../../utils/request';
 import LinearGradient from 'react-native-linear-gradient';
-import {createMaterialTopTabNavigator} from 'react-navigation-tabs';
 import ClassifyList from './classify-list';
-import {createAppContainer} from 'react-navigation';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 let keyWords = '';
 let TabViewCache: any;
+
+const TopTab = createMaterialTopTabNavigator()
+
+function topTabScreen(navigation: any, type: number) {
+    return () => <ClassifyList navigation={navigation} type={type} />
+}
 
 export default class Recommend extends React.Component<any, any>{
 
@@ -38,39 +43,45 @@ export default class Recommend extends React.Component<any, any>{
     private changeType() {
     }
 
-    private generateRouterConf () {
-        const conf: any = {};
-        this.state.classifyList.forEach((item: any) => {
-            conf[item.name] = () => (<ClassifyList navigation={this.props.navigation} type={item.id} />);
-        });
-        return conf;
-    }
-
     private createTabView() {
         if (this.state.classifyList.length === 0) {
             return <></>;
         }
         if (TabViewCache) {
-            return <TabViewCache />;
+            return TabViewCache;
         }
-        TabViewCache = createAppContainer(createMaterialTopTabNavigator(this.generateRouterConf(), {
-            lazy: true,
-            swipeEnabled: true,
-            tabBarPosition: 'top',
-            tabBarOptions: {
-                showLabel: true,
-                showIcon: false,
-                scrollEnabled: true,
-                activeTintColor: '#ff5c49',
-                labelStyle: {fontSize: 14},
-                indicatorStyle: {height: 4, backgroundColor: '#ff5c49', borderRadius: 20},
-                tabStyle: {width: 'auto', marginLeft: 5,marginRight:5, marginBottom: 3, padding: 0, height: 40},
-                style: { backgroundColor: 'transparent' },
-                pressColor: 'transparent',
-                pressOpacity: 0.7,
-            },
-        }));
-        return <TabViewCache />;
+        TabViewCache = (
+                <TopTab.Navigator
+                    lazy={true}
+                    swipeEnabled={true}
+                    tabBarPosition={'top'}
+                    sceneContainerStyle={{backgroundColor: '#2b2b2b'}}
+                    backBehavior={"none"}
+                    tabBarOptions={{
+                        showLabel: true,
+                        showIcon: false,
+                        scrollEnabled: true,
+                        activeTintColor: '#ff5c49',
+                        inactiveTintColor: '#f1f1f1',
+                        labelStyle: {fontSize: 14},
+                        indicatorStyle: {height: 4, backgroundColor: '#ff5c49', borderRadius: 20},
+                        tabStyle: {width: 'auto', marginLeft: 5,marginRight:5, marginBottom: 3, padding: 0, height: 40},
+                        style: { backgroundColor: 'transparent' },
+                        pressColor: 'transparent',
+                        pressOpacity: 0.7,
+                    }}
+                >
+                    {this.state.classifyList.map((item: any) => (
+                        <TopTab.Screen
+                            key={item.id}
+                            name={item.name}
+                            component={topTabScreen(this.props.navigation, item.id)}
+                        />
+                    ))}
+                </TopTab.Navigator>
+        )
+
+        return TabViewCache;
     }
 
     componentDidMount(): void {

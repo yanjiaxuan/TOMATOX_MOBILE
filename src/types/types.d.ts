@@ -18,7 +18,7 @@ declare interface IplayResource {
     tag: string;
     year: string;
     updateTime: string;
-    playList: Map<string, string>;
+    playList: { index: string[], mapper: Record<string, string> };
     historyOption?: {
         lastPlaySrc?: string;
         lastPlayTime?: number;
