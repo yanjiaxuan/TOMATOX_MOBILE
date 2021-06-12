@@ -1,26 +1,22 @@
 import React from 'react';
 import {
-    Image, Keyboard,
-    SafeAreaView,
+    Image,
     StyleSheet,
     Text,
-    TextInput,
-    View,
+    View
 } from 'react-native';
 import TIcon from '../../images/png/tomatox.png';
 import {queryTypes} from '../../utils/request';
 import LinearGradient from 'react-native-linear-gradient';
 import ClassifyList from './classify-list';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-let keyWords = '';
-let TabViewCache: any;
 
+let TabViewCache: any;
 const TopTab = createMaterialTopTabNavigator()
 
 function topTabScreen(navigation: any, type: number) {
     return () => <ClassifyList navigation={navigation} type={type} />
 }
-
 export default class Recommend extends React.Component<any, any>{
 
     constructor(props: any) {
@@ -31,13 +27,8 @@ export default class Recommend extends React.Component<any, any>{
         };
     }
 
-    private changeKW(val: any) {
-        keyWords = val;
-    }
-
     private searchRes() {
-        Keyboard.dismiss();
-        console.log(keyWords);
+        console.log(123);
     }
 
     private changeType() {
@@ -95,16 +86,18 @@ export default class Recommend extends React.Component<any, any>{
     }
     render(): React.ReactNode {
         return (
-            <SafeAreaView style={style.fullWrapper}>
+            <View style={style.fullWrapper}>
                 <LinearGradient colors={['#232222', '#2b2b2b']} style={{height: 50}}>
                     <View style={style.titleBar}>
                         <Image source={TIcon} style={style.titleImg} />
-                        <TextInput style={style.titleInput} placeholderTextColor={'#929292'} onChangeText={this.changeKW} placeholder={'电影、电视剧、综艺...'} />
+                        <View style={style.titleInput} onTouchEnd={this.searchRes}>
+                            <Text style={style.titleInputText}>电影、电视剧、综艺...</Text>
+                        </View>
                         <Text onPress={this.searchRes} style={style.titleText}>搜索</Text>
                     </View>
                 </LinearGradient>
                 { this.createTabView() }
-            </SafeAreaView>
+            </View>
         );
     }
 
@@ -143,7 +136,10 @@ const style = StyleSheet.create({
         paddingLeft: 15,
         paddingRight: 15,
         marginRight: 15,
-        color: '#f1f1f1',
+        justifyContent: "center"
+    },
+    titleInputText: {
+        color: '#a1a1a1'
     },
     titleText: {
         color: '#f1f1f1',

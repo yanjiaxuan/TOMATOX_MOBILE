@@ -59,7 +59,11 @@ export default function tomatoxDrawer(props: { resource: IplayResource, curPlay:
                     </View>
                 </View>
                 <Text style={style.playInfoTitle2}>选集</Text>
-                <ScrollView style={{marginBottom: 120}}>
+                <ScrollView
+                    style={{marginBottom: 150}}
+                    showsHorizontalScrollIndicator={false}
+                    showsVerticalScrollIndicator={false}
+                >
                     <View style={style.playItemWrapper}>
                         {props.resource.playList.index.map(key => (
                             <TouchableOpacity key={key} onPress={() => props.changePlay(key)}>
@@ -129,9 +133,9 @@ const style = StyleSheet.create({
     },
     playItem: {
         fontSize: 11,
-        width: 85,
+        width: 75,
         height: 30,
-        lineHeight: 30,
+        lineHeight: 35,
         textAlign: 'center',
         color: '#dddddd',
         marginTop: 4,
@@ -142,7 +146,7 @@ const style = StyleSheet.create({
         borderRadius: 2,
     },
     nonePlayItem: {
-        width: 85,
+        width: 75,
         height: 30,
         marginTop: 4,
         marginBottom: 4,

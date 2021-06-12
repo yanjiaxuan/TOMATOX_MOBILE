@@ -1,8 +1,8 @@
 import React from "react";
-import {Text} from "react-native";
+import Developing from '../../components/tomatox-developing/tomatox-developing'
 
-export default function setting(props: any) {
+export default function setting() {
     return (
-        <Text>设置</Text>
+        <Developing />
     )
 }

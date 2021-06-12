@@ -11,7 +11,11 @@ export default function resourceInfo(props: {resource: IplayResource, close: () 
                     <Icon name={'x'} style={style.infoTitleBtn} />
                 </TouchableOpacity>
             </View>
-            <ScrollView style={{position: 'relative'}}>
+            <ScrollView
+                style={{position: 'relative'}}
+                showsHorizontalScrollIndicator={false}
+                showsVerticalScrollIndicator={false}
+            >
                 <Image source={{uri: props.resource.picture}} style={style.infoImg} resizeMode={'cover'} />
                 <Text style={style.infoItem}>
                     <Text style={style.infoItemTitle}>剧名：</Text>

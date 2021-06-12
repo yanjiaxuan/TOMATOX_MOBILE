@@ -13,7 +13,9 @@ let timmerId:any;
 let posX: any;
 let posY: any;
 let direction: any;
-let brightness = 0.5;
+let brightness = 5;
+let controlState = false;
+let touchMoveCount = 0
 SystemSetting.getBrightness().then(bri => brightness = bri)
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get("window").height;
@@ -33,68 +35,79 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
         return () => Orientation.removeLockListener(orientationListener)
     }, [])
     const touchHandler = {
-        onTouchMove: (event: GestureResponderEvent) => {
+        onStartShouldSetResponder: () => true,
+        onMoveShouldSetResponder: () => true,
+        onResponderMove: (event: GestureResponderEvent) => {
             resetTimmer()
             const {locationX, locationY} = event.nativeEvent
             const xOffset = locationX - posX
             const yOffset = locationY - posY
-            if (!direction) {
-                if (Math.abs(xOffset) > Math.abs(yOffset * 2)) {
-                    direction = 1   // 横向，控制进度
-                } else {
-                    const width = fullScreen ? windowHeight : windowWidth
-                    // 纵向，控制音量和亮度
-                    if (locationX < width / 2) {
-                        direction = 2   // 亮度
+            if (touchMoveCount <= 3) {
+                touchMoveCount++
+                if (touchMoveCount === 1) {
+                    posX = locationX
+                    posY = locationY
+                }
+                if (touchMoveCount === 3) {
+                    if (Math.abs(xOffset) > Math.abs(yOffset)) {
+                        direction = 1   // 横向，控制进度
                     } else {
-                        direction = 3   // 音量
+                        const width = fullScreen ? windowHeight : windowWidth
+                        // 纵向，控制音量和亮度
+                        if (locationX < width / 2) {
+                            direction = 2   // 亮度
+                        } else {
+                            direction = 3   // 音量
+                        }
                     }
                 }
-            } else {
-                switch(direction) {
-                    case 1:
-                        setSeeking(true)
-                        const playPos = xOffset > 0 ? Math.min(fullTime, curTime + xOffset * 2) :
-                            Math.max(0, curTime + xOffset * 2)
-                        setCurTime(playPos)
-                        setProcessCenterInfo(`${convertSecondToTime(playPos, fullTime)} / ${convertSecondToTime(fullTime,fullTime)}`)
-                        break
-                    case 2:
-                        if (yOffset > 0) {
-                            brightness = Math.max(0, brightness - yOffset * 0.008)
-                        } else {
-                            brightness = Math.min(1, brightness - yOffset * 0.008)
-                        }
-                        setProcessCenterInfo(`亮度：${Math.floor(brightness * 100)}%`)
-                        SystemSetting.setBrightness(brightness)
-                        break
-                    case 3:
-                        if (yOffset > 0) {
-                            // 音量-
-                            setVolume(Math.max(0, volume - yOffset * 0.008))
-                        } else {
-                            // 音量+
-                            setVolume(Math.min(1, volume - yOffset * 0.008))
-                        }
-                        setProcessCenterInfo(`音量：${Math.floor(volume * 100)}%`)
-                        break
-                    default:
-                        break
-                }
+                return
+            }
+            switch(direction) {
+                case 1:
+                    setSeeking(true)
+                    const playPos = xOffset > 0 ? Math.min(fullTime, curTime + xOffset * 2) :
+                        Math.max(0, curTime + xOffset * 2)
+                    setCurTime(playPos)
+                    setProcessCenterInfo(`${convertSecondToTime(playPos, fullTime)} / ${convertSecondToTime(fullTime,fullTime)}`)
+                    break
+                case 2:
+                    if (yOffset > 0) {
+                        brightness = Math.max(0, brightness - yOffset * 0.1)
+                    } else {
+                        brightness = Math.min(10, brightness - yOffset * 0.1)
+                    }
+                    setProcessCenterInfo(`亮度：${Math.floor(brightness * 10)}%`)
+                    SystemSetting.setBrightnessForce(brightness)
+                    break
+                case 3:
+                    if (yOffset > 0) {
+                        // 音量-
+                        setVolume(Math.max(0, volume - yOffset * 0.008))
+                    } else {
+                        // 音量+
+                        setVolume(Math.min(1, volume - yOffset * 0.008))
+                    }
+                    setProcessCenterInfo(`音量：${Math.floor(volume * 100)}%`)
+                    break
+                default:
+                    break
             }
 
             posX = locationX
             posY = locationY
         },
-        onTouchStart: (event: GestureResponderEvent) => {
+        onResponderGrant: (event: GestureResponderEvent) => {
+            controlState = showControl
             const {locationX, locationY} = event.nativeEvent
             posX = locationX
             posY = locationY
             touchStartTime.current = Date.now()
         },
-        onTouchEnd: (event: GestureResponderEvent) => {
+        onResponderRelease: (event: GestureResponderEvent) => {
             posX = undefined
             posY = undefined
+            touchMoveCount = 0
             setProcessCenterInfo('')
             switch(direction) {
                 case 1:
@@ -110,7 +123,7 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
             }
             direction = undefined
             if (Date.now() - touchStartTime.current < 200) {
-                switchControl()
+                controlState === showControl && switchControl()
             }
         }
     }

@@ -1,10 +1,8 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import Developing from '../../components/tomatox-developing/tomatox-developing'
 
 export default function () {
     return (
-        <View>
-            <Text>历史记录</Text>
-        </View>
+        <Developing />
     );
 }
