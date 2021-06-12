@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {BackHandler, StyleSheet, View} from 'react-native';
+import {BackHandler, StyleSheet, Text, View} from 'react-native';
 import TomatoxVideo from '../../components/tomatox-video/tomatox-video';
 import TomatoxDrawer from '../../components/tomatox-drawer/tomatox-drawer';
 import {useNavigation, useRoute} from '@react-navigation/native';
