@@ -20,7 +20,7 @@ let switchTimmerId: any;
 SystemSetting.getBrightness().then(bri => brightness = bri);
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-const defaultVideoHeight = 240;
+const defaultVideoHeight = 250;
 const fsVideoHeight = windowWidth as number;
 export default function tomatoxVideo (props: {src: string, back: () => void, playNext: (cb: () => void) => void}) {
     const [videoInstance, setVideoInstance] = useState<Video>();
@@ -145,6 +145,7 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
     const orientationListener = (type: OrientationType) => {
         if (type === 'PORTRAIT') {
             setFullScreen(false);
+            setVideoHeight(defaultVideoHeight)
         }
     };
 
