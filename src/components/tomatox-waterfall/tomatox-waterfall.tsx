@@ -1,29 +1,71 @@
-import React from 'react';
-import TomatoxCard from '../tomatox-card/tomatox-card';
-import {FlatList, StyleSheet, Text} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import TomatoxFlatList from '../../components/tomatox-flat-list/tomatox-flat-list';
+import {queryResources} from '../../utils/request';
+import {filterResources} from '../../utils/filterResources';
 
-const style = StyleSheet.create({
-    contentList: {
-        backgroundColor: '#2b2b2b',
-        flex: 1,
-        padding: 7,
-    },
-    contentFooter: {
-        textAlign: 'center',
-        color: '#f1f1f1',
-        height: 50,
-        lineHeight: 40,
-    },
-});
+export default function tomatoxWaterfall(props: {type?: number, keyword?: string}) {
+    const [resourceList, setResourceList] = useState<IplayResource[]>([]);
+    const [haveMoreData, setHaveMoreData] = useState(true);
+    const [curPage, setCurPage] = useState(0);
+    const [pageCount, setPageCount] = useState(10);
+    const curKeyword = useRef(props.keyword)
 
-export default function tomatoxWaterfall(props: {loadMore: any, data: any, navigation: any, haveMoreData: boolean}) {
-     return <FlatList style={style.contentList}
-              data={props.data}
-              numColumns={3}
-              onEndReached={props.loadMore}
-              onEndReachedThreshold={0.7}
-              renderItem={({item}) => <TomatoxCard key={item.id} data={item} navigation={props.navigation} />}
-              ListFooterComponent={(
-                  <Text style={style.contentFooter}>{props.haveMoreData ? '正在加载数据...' : '到底啦~'}</Text>
-              )} />;
+    const getMoreData = () => {
+        let prom;
+        setCurPage(curPage + 1);
+        if (curPage >= pageCount) {
+            setHaveMoreData(false);
+            return;
+        }
+        if (props.type != null) {
+            if (props.type === -1) {
+                prom = queryResources(curPage, undefined, undefined, 24);
+            } else {
+                prom = queryResources(curPage, props.type);
+            }
+        } else if (props.keyword) {
+            prom = queryResources(curPage, undefined, props.keyword);
+        } else {
+            setHaveMoreData(false)
+            setResourceList([])
+            return;
+        }
+
+        prom.then((res: any) => {
+            const {pagecount, list} = res;
+            if (curPage >= pagecount) {
+                setHaveMoreData(false);
+            }
+            setPageCount(pagecount);
+            setResourceList([
+                ...resourceList,
+                ...filterResources(list),
+            ]);
+        });
+    };
+
+    const initOrResetComponent = () => {
+        setResourceList([])
+        setHaveMoreData(true)
+        setCurPage(0)
+        setPageCount(10)
+        getMoreData()
+    }
+
+    useEffect(() => {
+        initOrResetComponent()
+    }, []);
+
+    if (curKeyword.current !== props.keyword) {
+        curKeyword.current = props.keyword
+        initOrResetComponent()
+    }
+
+    return (
+        <TomatoxFlatList
+            loadMore={getMoreData}
+            data={resourceList}
+            haveMoreData={haveMoreData}
+        />
+    );
 }

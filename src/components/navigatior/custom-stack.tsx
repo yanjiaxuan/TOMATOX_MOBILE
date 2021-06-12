@@ -1,6 +1,7 @@
-import React from "react";
+import React from 'react';
 import CustomTab from './custom-tab';
 import Player from '../../views/player/player';
+import Search from '../../views/search/search';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 
@@ -12,6 +13,7 @@ export default function customStack() {
             <Stack.Navigator headerMode={'none'} mode={'card'} >
                 <Stack.Screen name={'Main'} component={CustomTab} />
                 <Stack.Screen name={'Player'} component={Player} />
+                <Stack.Screen name={'Search'} component={Search} />
             </Stack.Navigator>
         </NavigationContainer>
     );

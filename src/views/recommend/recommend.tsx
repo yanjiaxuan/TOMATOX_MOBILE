@@ -8,14 +8,14 @@ import {
 import TIcon from '../../images/png/tomatox.png';
 import {queryTypes} from '../../utils/request';
 import LinearGradient from 'react-native-linear-gradient';
-import ClassifyList from './classify-list';
+import TomatoxWaterfall from '../../components/tomatox-waterfall/tomatox-waterfall';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 let TabViewCache: any;
 const TopTab = createMaterialTopTabNavigator()
 
-function topTabScreen(navigation: any, type: number) {
-    return () => <ClassifyList navigation={navigation} type={type} />
+function topTabScreen(type: number) {
+    return () => <TomatoxWaterfall type={type} />
 }
 export default class Recommend extends React.Component<any, any>{
 
@@ -25,13 +25,6 @@ export default class Recommend extends React.Component<any, any>{
             classifyList: [],
             selectedTabIdx: -1,
         };
-    }
-
-    private searchRes() {
-        console.log(123);
-    }
-
-    private changeType() {
     }
 
     private createTabView() {
@@ -66,7 +59,7 @@ export default class Recommend extends React.Component<any, any>{
                         <TopTab.Screen
                             key={item.id}
                             name={item.name}
-                            component={topTabScreen(this.props.navigation, item.id)}
+                            component={topTabScreen(item.id)}
                         />
                     ))}
                 </TopTab.Navigator>
@@ -81,7 +74,6 @@ export default class Recommend extends React.Component<any, any>{
             this.setState({
                 classifyList: res,
             });
-            this.changeType();
         });
     }
     render(): React.ReactNode {
@@ -90,10 +82,10 @@ export default class Recommend extends React.Component<any, any>{
                 <LinearGradient colors={['#232222', '#2b2b2b']} style={{height: 50}}>
                     <View style={style.titleBar}>
                         <Image source={TIcon} style={style.titleImg} />
-                        <View style={style.titleInput} onTouchEnd={this.searchRes}>
+                        <View style={style.titleInput} onTouchEnd={() => this.props.navigation.navigate('Search')}>
                             <Text style={style.titleInputText}>电影、电视剧、综艺...</Text>
                         </View>
-                        <Text onPress={this.searchRes} style={style.titleText}>搜索</Text>
+                        <Text onPress={() => this.props.navigation.navigate('Search')} style={style.titleText}>搜索</Text>
                     </View>
                 </LinearGradient>
                 { this.createTabView() }
@@ -104,7 +96,7 @@ export default class Recommend extends React.Component<any, any>{
     private switchTab(id: any) {
         this.setState({
             selectedTabIdx: id,
-        }, this.changeType);
+        });
     }
 }
 
@@ -128,7 +120,7 @@ const style = StyleSheet.create({
     },
     titleInput: {
         flex: 1,
-        backgroundColor: 'rgba(128,128,128,0.69)',
+        backgroundColor: 'rgba(0,0,0,0.2)',
         height: 30,
         paddingTop: 0,
         paddingBottom: 0,
