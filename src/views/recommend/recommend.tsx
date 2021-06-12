@@ -10,6 +10,7 @@ import {queryTypes} from '../../utils/request';
 import LinearGradient from 'react-native-linear-gradient';
 import TomatoxWaterfall from '../../components/tomatox-waterfall/tomatox-waterfall';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import SplashScreen from 'react-native-splash-screen'
 
 let TabViewCache: any;
 const TopTab = createMaterialTopTabNavigator()
@@ -74,6 +75,7 @@ export default class Recommend extends React.Component<any, any>{
             this.setState({
                 classifyList: res,
             });
+            SplashScreen.hide()
         });
     }
     render(): React.ReactNode {
