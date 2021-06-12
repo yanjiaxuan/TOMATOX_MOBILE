@@ -3,6 +3,7 @@ import {BackHandler, StyleSheet, View} from 'react-native';
 import TomatoxVideo from '../../components/tomatox-video/tomatox-video';
 import TomatoxDrawer from '../../components/tomatox-drawer/tomatox-drawer';
 import {useNavigation, useRoute} from '@react-navigation/native';
+import Orientation from "react-native-orientation-locker";
 
 const style = StyleSheet.create({
     playerWrapper: {
@@ -25,7 +26,13 @@ export default function (props: any) {
     });
 
     function goBack() {
-        navigation.goBack();
+        Orientation.getOrientation(orientation => {
+            if (orientation === 'PORTRAIT') {
+                navigation.goBack();
+            } else {
+                Orientation.lockToPortrait();
+            }
+        })
         return true;
     }
 
@@ -42,7 +49,7 @@ export default function (props: any) {
         <View style={style.playerWrapper}>
             <TomatoxVideo
                 src={resource.playList.mapper[curPlay]}
-                back={() => { props.navigation.goBack(); }}
+                back={goBack}
                 playNext={playNext}
             />
             <TomatoxDrawer resource={resource} curPlay={curPlay} changePlay={key => setCurPlay(key)}/>

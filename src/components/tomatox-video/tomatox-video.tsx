@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler'
 import Slider from '@react-native-community/slider';
@@ -6,7 +6,7 @@ import Video from 'react-native-video';
 import Icon from 'react-native-vector-icons/Feather';
 import {convertSecondToTime} from '../../utils/time-converter';
 import LinearGradient from 'react-native-linear-gradient';
-import Orientation from 'react-native-orientation-locker';
+import Orientation, {OrientationType} from 'react-native-orientation-locker';
 
 let timmerId:any;
 const windowWidth = Dimensions.get('window').width;
@@ -19,6 +19,16 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
     const [volume, setVolume] = useState(1);
     const [fullScreen, setFullScreen] = useState(false);
     const [showControl, setShowControl] = useState(false);
+    useEffect(() => {
+        Orientation.addLockListener(orientationListener)
+        return () => Orientation.removeLockListener(orientationListener)
+    }, [])
+    const orientationListener = (type: OrientationType) => {
+        if (type === 'PORTRAIT') {
+            setFullScreen(false)
+        }
+    }
+
     const handlePlayEnd = () => {
         setPlayState(false);
         setCurTime(0);
@@ -64,7 +74,7 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
         <View style={[style.videoWrapper, fullScreen ? style.videoWrapperFS : {}]}>
             {
                 showControl &&
-                <View style={style.videoControl}>
+                <View style={[style.videoControl, fullScreen ? style.videoControlFS : []]}>
                     <LinearGradient colors={['rgba(0,0,0,0.7)', 'rgba(0,0,0,0)']} style={style.videoControlTop}>
                         <TouchableOpacity onPress={processGoBack}>
                             <Icon name={'chevron-left'} style={style.topBtn} />
@@ -137,6 +147,9 @@ const style = StyleSheet.create({
         width: '100%',
         height: 250,
         zIndex: 1,
+    },
+    videoControlFS: {
+        height: windowWidth
     },
     videoControlTop: {
         paddingLeft: 5,
