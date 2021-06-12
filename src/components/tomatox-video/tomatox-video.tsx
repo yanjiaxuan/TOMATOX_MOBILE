@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {Dimensions, GestureResponderEvent, StyleSheet, Text, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler'
 import Slider from '@react-native-community/slider';
 import Video from 'react-native-video';
@@ -7,9 +7,16 @@ import Icon from 'react-native-vector-icons/Feather';
 import {convertSecondToTime} from '../../utils/time-converter';
 import LinearGradient from 'react-native-linear-gradient';
 import Orientation, {OrientationType} from 'react-native-orientation-locker';
+import SystemSetting from 'react-native-system-setting'
 
 let timmerId:any;
+let posX: any;
+let posY: any;
+let direction: any;
+let brightness = 0.5;
+SystemSetting.getBrightness().then(bri => brightness = bri)
 const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get("window").height;
 export default function tomatoxVideo (props: {src: string, back: () => void, playNext: (cb: () => void) => void}) {
     const [videoInstance, setVideoInstance] = useState<Video>();
     const [seeking, setSeeking] = useState(false);
@@ -19,10 +26,94 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
     const [volume, setVolume] = useState(1);
     const [fullScreen, setFullScreen] = useState(false);
     const [showControl, setShowControl] = useState(false);
+    const [processCenterInfo, setProcessCenterInfo] = useState('')
+    const touchStartTime = useRef(0)
     useEffect(() => {
         Orientation.addLockListener(orientationListener)
         return () => Orientation.removeLockListener(orientationListener)
     }, [])
+    const touchHandler = {
+        onTouchMove: (event: GestureResponderEvent) => {
+            resetTimmer()
+            const {locationX, locationY} = event.nativeEvent
+            const xOffset = locationX - posX
+            const yOffset = locationY - posY
+            if (!direction) {
+                if (Math.abs(xOffset) > Math.abs(yOffset * 2)) {
+                    direction = 1   // 横向，控制进度
+                } else {
+                    const width = fullScreen ? windowHeight : windowWidth
+                    // 纵向，控制音量和亮度
+                    if (locationX < width / 2) {
+                        direction = 2   // 亮度
+                    } else {
+                        direction = 3   // 音量
+                    }
+                }
+            } else {
+                switch(direction) {
+                    case 1:
+                        setSeeking(true)
+                        const playPos = xOffset > 0 ? Math.min(fullTime, curTime + xOffset * 2) :
+                            Math.max(0, curTime + xOffset * 2)
+                        setCurTime(playPos)
+                        setProcessCenterInfo(`${convertSecondToTime(playPos, fullTime)} / ${convertSecondToTime(fullTime,fullTime)}`)
+                        break
+                    case 2:
+                        if (yOffset > 0) {
+                            brightness = Math.max(0, brightness - yOffset * 0.008)
+                        } else {
+                            brightness = Math.min(1, brightness - yOffset * 0.008)
+                        }
+                        setProcessCenterInfo(`亮度：${Math.floor(brightness * 100)}%`)
+                        SystemSetting.setBrightness(brightness)
+                        break
+                    case 3:
+                        if (yOffset > 0) {
+                            // 音量-
+                            setVolume(Math.max(0, volume - yOffset * 0.008))
+                        } else {
+                            // 音量+
+                            setVolume(Math.min(1, volume - yOffset * 0.008))
+                        }
+                        setProcessCenterInfo(`音量：${Math.floor(volume * 100)}%`)
+                        break
+                    default:
+                        break
+                }
+            }
+
+            posX = locationX
+            posY = locationY
+        },
+        onTouchStart: (event: GestureResponderEvent) => {
+            const {locationX, locationY} = event.nativeEvent
+            posX = locationX
+            posY = locationY
+            touchStartTime.current = Date.now()
+        },
+        onTouchEnd: (event: GestureResponderEvent) => {
+            posX = undefined
+            posY = undefined
+            setProcessCenterInfo('')
+            switch(direction) {
+                case 1:
+                    videoInstance?.seek(curTime)
+                    setTimeout(() => setSeeking(false), 100)
+                    break
+                case 2:
+                    break
+                case 3:
+                    break
+                default:
+                    break
+            }
+            direction = undefined
+            if (Date.now() - touchStartTime.current < 200) {
+                switchControl()
+            }
+        }
+    }
     const orientationListener = (type: OrientationType) => {
         if (type === 'PORTRAIT') {
             setFullScreen(false)
@@ -46,6 +137,7 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
         setShowControl(!showControl);
     };
     const resetTimmer = () => {
+        setShowControl(true)
         timmerId && clearTimeout(timmerId);
         timmerId = setTimeout(() => {
             setShowControl(false);
@@ -83,10 +175,8 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
                             <Icon name={'airplay'} style={{...style.topBtn, fontSize: 20}} />
                         </TouchableOpacity>
                     </LinearGradient>
-                    <TouchableOpacity onPress={switchControl}>
-                        <View style={[style.videoControlCenter, fullScreen ? style.videoControlCenterFS : {}]} />
-                    </TouchableOpacity>
-                    <LinearGradient colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.7)']} style={style.videoControlBottom}>
+                    <LinearGradient colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.7)']}
+                                    style={[style.videoControlBottom, fullScreen? style.videoControlBottomFS:{}]}>
                         <TouchableOpacity onPress={() => {resetTimmer(); setPlayState(!playState);}}>
                             <Icon name={playState ? 'pause' : 'play'} style={style.videoPlayPause}/>
                         </TouchableOpacity>
@@ -103,7 +193,7 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
                             onValueChange={value => {setCurTime(value); resetTimmer();}}
                         />
                         <Text style={style.videoProcess}>
-                            {`${convertSecondToTime(curTime, fullTime >= 3600)}/${convertSecondToTime(fullTime, fullTime >= 3600)}`}
+                            {`${convertSecondToTime(curTime, fullTime)}/${convertSecondToTime(fullTime, fullTime)}`}
                         </Text>
                         <TouchableOpacity onPress={switchScreenState}>
                             <Icon name={fullScreen ? 'minimize' : 'maximize'} style={style.videoFullScreen} />
@@ -111,6 +201,15 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
                     </LinearGradient>
                 </View>
             }
+            <View
+                style={[style.videoControlCenter, fullScreen ? style.videoControlCenterFS: {}]}
+                {...touchHandler}
+            >
+                {
+                    Boolean(processCenterInfo) &&
+                    <Text style={style.videoControlCenterContent}>{processCenterInfo}</Text>
+                }
+            </View>
             <Video
                 ref={(instance: Video) => setVideoInstance(instance)}
                 onLoad={data => setFullTime(data.duration)} // when loaded, record fullTime
@@ -166,11 +265,27 @@ const style = StyleSheet.create({
     videoControlCenter: {
         width: '100%',
         height: 160,
+        zIndex: 10,
+        top: 45,
+        position: "absolute",
+        justifyContent: "center",
+        alignItems: "center"
     },
     videoControlCenterFS: {
         height: windowWidth - 90
     },
+    videoControlCenterContent: {
+        fontSize: 13,
+        color: '#f1f1f1',
+        backgroundColor: 'rgba(0,0,0,0.2)',
+        paddingTop: 7,
+        paddingBottom: 7,
+        paddingLeft: 15,
+        paddingRight: 15,
+        borderRadius: 5
+    },
     videoControlBottom: {
+        top: 160,
         height: 45,
         width: '100%',
         flexDirection: 'row',
@@ -178,6 +293,9 @@ const style = StyleSheet.create({
         alignItems: 'center',
         paddingLeft: 10,
         paddingRight: 15,
+    },
+    videoControlBottomFS: {
+        top: windowWidth - 90
     },
     videoPlayPause: {
         color: '#f1f1f1',

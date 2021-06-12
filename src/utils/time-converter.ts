@@ -1,4 +1,5 @@
-export function convertSecondToTime(date: number, useHours: boolean) {
+export function convertSecondToTime(date: number, full: number) {
+    const useHours = full > 3600
     let handleTime = date;
     let target = '';
     if (useHours) {

@@ -129,7 +129,7 @@ const style = StyleSheet.create({
     },
     playItem: {
         fontSize: 11,
-        width: 90,
+        width: 85,
         height: 30,
         lineHeight: 30,
         textAlign: 'center',
@@ -142,7 +142,7 @@ const style = StyleSheet.create({
         borderRadius: 2,
     },
     nonePlayItem: {
-        width: 90,
+        width: 85,
         height: 30,
         marginTop: 4,
         marginBottom: 4,
