@@ -1,14 +1,15 @@
 import React, {useState} from 'react';
-import {Dimensions, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler'
 import Slider from '@react-native-community/slider';
 import Video from 'react-native-video';
 import Icon from 'react-native-vector-icons/Feather';
 import {convertSecondToTime} from '../../utils/time-converter';
 import LinearGradient from 'react-native-linear-gradient';
-import Orientation from "react-native-orientation-locker";
+import Orientation from 'react-native-orientation-locker';
 
-let timmerId:any
-const windowWidth = Dimensions.get("window").width
+let timmerId:any;
+const windowWidth = Dimensions.get('window').width;
 export default function tomatoxVideo (props: {src: string, back: () => void, playNext: (cb: () => void) => void}) {
     const [videoInstance, setVideoInstance] = useState<Video>();
     const [seeking, setSeeking] = useState(false);
@@ -17,7 +18,7 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
     const [fullTime, setFullTime] = useState(0);
     const [volume, setVolume] = useState(1);
     const [fullScreen, setFullScreen] = useState(false);
-    const [showControl, setShowControl] = useState(false)
+    const [showControl, setShowControl] = useState(false);
     const handlePlayEnd = () => {
         setPlayState(false);
         setCurTime(0);
@@ -26,44 +27,44 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
 
     const switchControl = () => {
         if (showControl) {
-            timmerId && clearTimeout(timmerId)
+            timmerId && clearTimeout(timmerId);
         } else {
             timmerId = setTimeout(() => {
-                setShowControl(false)
-            }, 5000)
+                setShowControl(false);
+            }, 5000);
         }
-        setShowControl(!showControl)
-    }
+        setShowControl(!showControl);
+    };
     const resetTimmer = () => {
-        timmerId && clearTimeout(timmerId)
+        timmerId && clearTimeout(timmerId);
         timmerId = setTimeout(() => {
-            setShowControl(false)
-        }, 5000)
-    }
+            setShowControl(false);
+        }, 5000);
+    };
 
     const switchScreenState = () => {
         if (fullScreen) {
-            Orientation.lockToPortrait()
+            Orientation.lockToPortrait();
         } else {
-            Orientation.lockToLandscape()
+            Orientation.lockToLandscape();
         }
         setFullScreen(!fullScreen);
-        resetTimmer()
-    }
+        resetTimmer();
+    };
 
     const processGoBack = () => {
         if (fullScreen) {
-            switchScreenState()
+            switchScreenState();
         } else {
-            props.back()
+            props.back();
         }
-    }
+    };
 
     return (
-        <View style={style.videoWrapper}>
+        <View style={[style.videoWrapper, fullScreen ? style.videoWrapperFS : {}]}>
             {
                 showControl &&
-                <View style={{...style.videoControl, height: fullScreen ? windowWidth : 250}}>
+                <View style={style.videoControl}>
                     <LinearGradient colors={['rgba(0,0,0,0.7)', 'rgba(0,0,0,0)']} style={style.videoControlTop}>
                         <TouchableOpacity onPress={processGoBack}>
                             <Icon name={'chevron-left'} style={style.topBtn} />
@@ -73,10 +74,10 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
                         </TouchableOpacity>
                     </LinearGradient>
                     <TouchableOpacity onPress={switchControl}>
-                        <View style={{...style.videoControlCenter, height: fullScreen ? windowWidth - 90 : 160}} />
+                        <View style={[style.videoControlCenter, fullScreen ? style.videoControlCenterFS : {}]} />
                     </TouchableOpacity>
                     <LinearGradient colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.7)']} style={style.videoControlBottom}>
-                        <TouchableOpacity onPress={() => {resetTimmer(); setPlayState(!playState)}}>
+                        <TouchableOpacity onPress={() => {resetTimmer(); setPlayState(!playState);}}>
                             <Icon name={playState ? 'pause' : 'play'} style={style.videoPlayPause}/>
                         </TouchableOpacity>
                         <Slider
@@ -89,7 +90,7 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
                             thumbTintColor={'#ff5c49'}
                             onSlidingStart={() => {setSeeking(true);}}
                             onSlidingComplete={() => {videoInstance?.seek(curTime); setTimeout(() => {setSeeking(false); setPlayState(true);}, 100);}}
-                            onValueChange={value => {setCurTime(value); resetTimmer()}}
+                            onValueChange={value => {setCurTime(value); resetTimmer();}}
                         />
                         <Text style={style.videoProcess}>
                             {`${convertSecondToTime(curTime, fullTime >= 3600)}/${convertSecondToTime(fullTime, fullTime >= 3600)}`}
@@ -110,7 +111,7 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
                 repeat={false}
                 volume={volume}
                 source={{uri: props.src}}
-                style={{...style.video, height: fullScreen ? windowWidth : 250}}
+                style={style.video}
                 resizeMode={'contain'}
                 fullscreen={fullScreen}
             />
@@ -123,7 +124,9 @@ const style = StyleSheet.create({
         width: '100%',
         height: 250,
         backgroundColor: '#000',
-        zIndex: 1
+    },
+    videoWrapperFS: {
+        height: windowWidth
     },
     video: {
         width: '100%',
@@ -133,15 +136,15 @@ const style = StyleSheet.create({
         position: 'absolute',
         width: '100%',
         height: 250,
-        zIndex: 1
+        zIndex: 1,
     },
     videoControlTop: {
         paddingLeft: 5,
         paddingRight: 15,
         height: 45,
-        justifyContent: "space-between",
-        alignItems: "center",
-        flexDirection: "row"
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexDirection: 'row',
     },
     topBtn: {
         color: '#f1f1f1',
@@ -150,6 +153,9 @@ const style = StyleSheet.create({
     videoControlCenter: {
         width: '100%',
         height: 160,
+    },
+    videoControlCenterFS: {
+        height: windowWidth - 90
     },
     videoControlBottom: {
         height: 45,

@@ -45,9 +45,7 @@ export default function (props: any) {
                 back={() => { props.navigation.goBack(); }}
                 playNext={playNext}
             />
-            {
-                <TomatoxDrawer resource={resource} curPlay={curPlay} changePlay={key => setCurPlay(key)}/>
-            }
+            <TomatoxDrawer resource={resource} curPlay={curPlay} changePlay={key => setCurPlay(key)}/>
         </View>
     );
 }

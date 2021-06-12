@@ -74,8 +74,6 @@ export default function tomatoxDrawer(props: { resource: IplayResource, curPlay:
                         <Text style={style.nonePlayItem} />
                         <Text style={style.nonePlayItem} />
                         <Text style={style.nonePlayItem} />
-                        <Text style={style.nonePlayItem} />
-                        <Text style={style.nonePlayItem} />
                     </View>
                 </ScrollView>
             </View>
@@ -86,6 +84,7 @@ export default function tomatoxDrawer(props: { resource: IplayResource, curPlay:
 const style = StyleSheet.create({
     playerInfoWrapper: {
         padding: 10,
+        backgroundColor: '#2b2b2b'
     },
     playInfoTitle: {
         fontWeight: 'bold',
@@ -129,23 +128,24 @@ const style = StyleSheet.create({
         justifyContent: 'space-around',
     },
     playItem: {
-        width: 100,
-        height: 35,
-        lineHeight: 35,
+        fontSize: 11,
+        width: 90,
+        height: 30,
+        lineHeight: 30,
         textAlign: 'center',
         color: '#dddddd',
-        marginTop: 6,
-        marginBottom: 6,
+        marginTop: 4,
+        marginBottom: 4,
         marginLeft: 3,
         marginRight: 3,
         backgroundColor: 'rgba(111,111,111,0.1)',
         borderRadius: 2,
     },
     nonePlayItem: {
-        width: 100,
-        height: 35,
-        marginTop: 6,
-        marginBottom: 6,
+        width: 90,
+        height: 30,
+        marginTop: 4,
+        marginBottom: 4,
         marginLeft: 3,
         marginRight: 3,
     },
