@@ -8,6 +8,7 @@ import {convertSecondToTime} from '../../utils/time-converter';
 import LinearGradient from 'react-native-linear-gradient';
 import Orientation, {OrientationType} from 'react-native-orientation-locker';
 import SystemSetting from 'react-native-system-setting';
+import {TOMATOX_THEME} from '../../utils/theme';
 
 let timmerId:any;
 let posX: any;
@@ -17,7 +18,7 @@ let brightness = 5;
 let controlState = false;
 let touchMoveCount = 0;
 let switchTimmerId: any;
-SystemSetting.getBrightness().then(bri => brightness = bri);
+SystemSetting.getBrightness().then(bri => {brightness = bri;});
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const defaultVideoHeight = 250;
@@ -106,7 +107,7 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
             posY = locationY;
             touchStartTime.current = Date.now();
         },
-        onTouchEnd: (event: GestureResponderEvent) => {
+        onTouchEnd: () => {
             const now = Date.now();
             posX = undefined;
             posY = undefined;
@@ -145,8 +146,8 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
     const orientationListener = (type: OrientationType) => {
         if (type === 'PORTRAIT') {
             setFullScreen(false);
-            setVideoHeight(defaultVideoHeight)
-            StatusBar.setHidden(false)
+            setVideoHeight(defaultVideoHeight);
+            StatusBar.setHidden(false);
         }
     };
 
@@ -176,10 +177,10 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
 
     const switchScreenState = () => {
         if (fullScreen) {
-            StatusBar.setHidden(false)
+            StatusBar.setHidden(false);
             Orientation.lockToPortrait();
         } else {
-            StatusBar.setHidden(true)
+            StatusBar.setHidden(true);
             Orientation.lockToLandscape();
         }
         setVideoHeight(fullScreen ? defaultVideoHeight : fsVideoHeight);
@@ -220,8 +221,12 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
             flexDirection: 'row',
         },
         topBtn: {
-            color: '#f1f1f1',
+            color: TOMATOX_THEME.FONT_COLOR,
             fontSize: 27,
+        },
+        topBtnRight: {
+            color: TOMATOX_THEME.FONT_COLOR,
+            fontSize: 20,
         },
         videoControlCenter: {
             width: '100%',
@@ -234,8 +239,8 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
         },
         videoControlCenterContent: {
             fontSize: 13,
-            color: '#f1f1f1',
-            backgroundColor: 'rgba(0,0,0,0.2)',
+            color: TOMATOX_THEME.FONT_COLOR,
+            backgroundColor: TOMATOX_THEME.COMPONENT_DARK_BACKGROUND,
             paddingTop: 7,
             paddingBottom: 7,
             paddingLeft: 15,
@@ -253,7 +258,7 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
             paddingRight: 15,
         },
         videoPlayPause: {
-            color: '#f1f1f1',
+            color: TOMATOX_THEME.FONT_COLOR,
             fontSize: 20,
         },
         videoSlider: {
@@ -261,12 +266,12 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
             height: 30,
         },
         videoProcess: {
-            color: '#f1f1f1',
+            color: TOMATOX_THEME.FONT_COLOR,
             fontSize: 10,
             fontWeight: 'bold',
         },
         videoFullScreen: {
-            color: '#f1f1f1',
+            color: TOMATOX_THEME.FONT_COLOR,
             fontSize: 18,
             marginLeft: 10,
         },
@@ -282,7 +287,7 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
                             <Icon name={'chevron-left'} style={style.topBtn} />
                         </TouchableOpacity>
                         <TouchableOpacity>
-                            <Icon name={'airplay'} style={{...style.topBtn, fontSize: 20}} />
+                            <Icon name={'airplay'} style={style.topBtnRight} />
                         </TouchableOpacity>
                     </LinearGradient>
                     <LinearGradient colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.7)']}
@@ -295,9 +300,9 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
                             value={curTime}
                             minimumValue={0}
                             maximumValue={fullTime}
-                            minimumTrackTintColor={'#ff5c49'}
-                            maximumTrackTintColor={'#fff'}
-                            thumbTintColor={'#ff5c49'}
+                            minimumTrackTintColor={TOMATOX_THEME.THEME_COLOR}
+                            maximumTrackTintColor={TOMATOX_THEME.UNIMPORTANT_FONT_COLOR}
+                            thumbTintColor={TOMATOX_THEME.THEME_COLOR}
                             onSlidingStart={() => {setSeeking(true);}}
                             onSlidingComplete={() => {videoInstance?.seek(curTime); setTimeout(() => {setSeeking(false);}, 100);}}
                             onValueChange={value => {setCurTime(value); resetTimmer();}}

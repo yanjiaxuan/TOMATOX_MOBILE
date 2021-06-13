@@ -3,13 +3,14 @@ import {View, Text, StyleSheet, TextInput} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
 import TomatoxWaterfall from '../../components/tomatox-waterfall/tomatox-waterfall';
+import {TOMATOX_THEME} from '../../utils/theme';
 
 export default function search() {
     const navigation = useNavigation();
     const [keyword, setKeyword] = useState('');
 
     const searchByKeyword = (event: any) => {
-        setKeyword(event.nativeEvent.text)
+        setKeyword(event.nativeEvent.text);
     };
 
     return (
@@ -18,7 +19,7 @@ export default function search() {
                 <TextInput
                     style={style.searchInput}
                     placeholder={'电影、电视剧、综艺...'}
-                    placeholderTextColor={'#a1a1a1'}
+                    placeholderTextColor={TOMATOX_THEME.UNIMPORTANT_FONT_COLOR}
                     autoFocus={true}
                     onSubmitEditing={searchByKeyword}
                     returnKeyType={'search'}
@@ -37,19 +38,19 @@ export default function search() {
 const style = StyleSheet.create({
     wrapper: {
         flex: 1,
-        backgroundColor: '#2b2b2b',
+        backgroundColor: TOMATOX_THEME.BACKGROUND_COLOR,
         padding: 10,
     },
     searchWrapper: {
         flexDirection: 'row',
         alignItems: 'center',
         flexWrap: 'nowrap',
-        height: 40
+        height: 40,
     },
     searchInput: {
         flex: 1,
-        color: '#f1f1f1',
-        backgroundColor: 'rgba(0,0,0,0.2)',
+        color: TOMATOX_THEME.FONT_COLOR,
+        backgroundColor: TOMATOX_THEME.COMPONENT_DARK_BACKGROUND,
         height: 35,
         lineHeight: 35,
         paddingTop: 0,
@@ -59,7 +60,7 @@ const style = StyleSheet.create({
         borderRadius: 35,
     },
     searchText: {
-        color: '#f1f1f1',
+        color: TOMATOX_THEME.FONT_COLOR,
         fontSize: 15,
         paddingLeft: 20,
         paddingRight: 5,

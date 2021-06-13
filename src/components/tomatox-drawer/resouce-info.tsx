@@ -1,6 +1,7 @@
 import React from 'react';
 import {Image, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import {TOMATOX_THEME} from "../../utils/theme";
 
 export default function resourceInfo(props: {resource: IplayResource, close: () => void}) {
     return (
@@ -77,14 +78,14 @@ const style = StyleSheet.create({
     },
     infoTitleText: {
         fontSize: 15,
-        color: '#f1f1f1',
+        color: TOMATOX_THEME.FONT_COLOR,
     },
     infoTitleBtnWrapper: {
         paddingLeft: 50
     },
     infoTitleBtn: {
         fontSize: 20,
-        color: '#f1f1f1',
+        color: TOMATOX_THEME.FONT_COLOR
     },
     infoImg: {
         width: 100,
@@ -93,16 +94,16 @@ const style = StyleSheet.create({
         right: 0,
     },
     infoItem: {
-        color: '#f1f1f1',
+        color: TOMATOX_THEME.FONT_COLOR,
         marginBottom: 5,
         fontSize: 13,
     },
     infoItemTitle: {
-        color: '#bbbbbb',
+        color: TOMATOX_THEME.UNIMPORTANT_FONT_COLOR,
     },
     infoDesc: {
         marginTop: 10,
         padding: 1,
-        color: '#f1f1f1',
+        color: TOMATOX_THEME.FONT_COLOR
     },
 });

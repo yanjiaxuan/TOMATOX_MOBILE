@@ -1,11 +1,12 @@
 import React from 'react';
 import {Image, Text, View} from 'react-native';
+import {TOMATOX_THEME} from "../../utils/theme";
 
 export default function (props: any) {
     return (
         <View style={
             {
-                backgroundColor: '#2b2b2b',
+                backgroundColor: TOMATOX_THEME.BACKGROUND_COLOR,
                 flex: 1,
                 flexDirection: 'row',
                 justifyContent: 'center',
@@ -21,7 +22,7 @@ export default function (props: any) {
                 }}
             />
             <Text style={{
-                color: '#f1f1f1',
+                color: TOMATOX_THEME.FONT_COLOR,
                 fontWeight: 'bold',
                 fontSize: 16,
             }}>

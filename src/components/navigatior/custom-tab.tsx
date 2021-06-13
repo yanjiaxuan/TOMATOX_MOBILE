@@ -6,8 +6,8 @@ import Live from '../../views/live/live';
 import Setting from '../../views/setting/setting';
 import {StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {TOMATOX_THEME} from '../../utils/theme';
 
 const Tab = createBottomTabNavigator();
 
@@ -15,7 +15,7 @@ const style = StyleSheet.create({
     tabBar: {
         paddingBottom: 4,
         borderTopWidth: 0,
-        backgroundColor: '#3d3d3d',
+        backgroundColor: TOMATOX_THEME.HIGHLIGTH_BACKGROUND_COLOR,
     },
 });
 
@@ -25,8 +25,8 @@ export default function customTab() {
             backBehavior={'none'}
             tabBarOptions={{
                 style: style.tabBar,
-                activeTintColor: '#ff5c49',
-                inactiveTintColor: '#bdbdbd',
+                activeTintColor: TOMATOX_THEME.THEME_COLOR,
+                inactiveTintColor: TOMATOX_THEME.UNIMPORTANT_FONT_COLOR,
             }}
             >
             <Tab.Screen name={'Recommend'} component={Recommend} options={{

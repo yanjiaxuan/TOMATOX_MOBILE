@@ -1,7 +1,7 @@
 import React from 'react';
-import {Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import constants from '../../utils/constants';
+import {TOMATOX_THEME} from "../../utils/theme";
 
 export default function tomatoxCard(props: { data: IplayResource }) {
     const {navigate} = useNavigation();
@@ -27,17 +27,17 @@ const style = StyleSheet.create({
     cardImg: {
         width: '100%',
         height: 110,
-        backgroundColor: 'rgba(0,0,0,0.2)',
+        backgroundColor: TOMATOX_THEME.COMPONENT_DARK_BACKGROUND,
         borderRadius: 5,
     },
     cardName: {
-        color: '#f1f1f1',
+        color: TOMATOX_THEME.FONT_COLOR,
         fontSize: 12,
         marginTop: 4,
         marginBottom: 2,
     },
     cardDesc: {
-        color: '#cecdcd',
+        color: TOMATOX_THEME.UNIMPORTANT_FONT_COLOR,
         fontSize: 10,
         width: '100%',
     },

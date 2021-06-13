@@ -3,6 +3,7 @@ import {Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react
 import Drawer from 'react-native-drawer';
 import ResourceInfo from './resouce-info';
 import Icon from 'react-native-vector-icons/Feather';
+import {TOMATOX_THEME} from "../../utils/theme";
 
 export default function tomatoxDrawer(props: { resource: IplayResource, curPlay: string, changePlay: (key: string) => void }) {
     const [showDrawer, setShowDrawer] = useState(false);
@@ -22,7 +23,7 @@ export default function tomatoxDrawer(props: { resource: IplayResource, curPlay:
             tapToClose={true}
             content={<ResourceInfo resource={props.resource} close={showDetailDrawer} />}
             styles={{
-                drawer: { backgroundColor: '#2b2b2b' },
+                drawer: { backgroundColor: TOMATOX_THEME.BACKGROUND_COLOR },
             }}
         >
             <View style={style.playerInfoWrapper}>
@@ -88,21 +89,21 @@ export default function tomatoxDrawer(props: { resource: IplayResource, curPlay:
 const style = StyleSheet.create({
     playerInfoWrapper: {
         padding: 10,
-        backgroundColor: '#2b2b2b'
+        backgroundColor: TOMATOX_THEME.BACKGROUND_COLOR
     },
     playInfoTitle: {
         fontWeight: 'bold',
         fontSize: 15,
-        color: '#f1f1f1',
+        color: TOMATOX_THEME.FONT_COLOR,
     },
     playInfoTitle2: {
         fontSize: 14,
-        color: '#f1f1f1',
+        color: TOMATOX_THEME.FONT_COLOR,
         marginBottom: 10,
     },
     playInfoDesc: {
         fontSize: 10,
-        color: '#d2d2d2',
+        color: TOMATOX_THEME.UNIMPORTANT_FONT_COLOR,
         marginTop: 5,
         marginBottom: 5,
     },
@@ -119,12 +120,12 @@ const style = StyleSheet.create({
     },
     playerOptionIcon: {
         fontSize: 22,
-        color: '#f1f1f1',
+        color: TOMATOX_THEME.FONT_COLOR,
         marginBottom: 5,
     },
     playerOptionTitle: {
         fontSize: 12,
-        color: '#dddddd',
+        color: TOMATOX_THEME.FONT_COLOR,
     },
     playItemWrapper: {
         flexDirection: 'row',
@@ -137,12 +138,12 @@ const style = StyleSheet.create({
         height: 30,
         lineHeight: 30,
         textAlign: 'center',
-        color: '#dddddd',
+        color: TOMATOX_THEME.FONT_COLOR,
         marginTop: 4,
         marginBottom: 4,
         marginLeft: 3,
         marginRight: 3,
-        backgroundColor: 'rgba(111,111,111,0.1)',
+        backgroundColor: TOMATOX_THEME.COMPONENT_LIGHT_BACKGROUND,
         borderRadius: 2,
     },
     nonePlayItem: {
@@ -154,6 +155,6 @@ const style = StyleSheet.create({
         marginRight: 3,
     },
     activePlayItem: {
-        backgroundColor: '#ff5c49',
+        backgroundColor: TOMATOX_THEME.THEME_COLOR,
     },
 });

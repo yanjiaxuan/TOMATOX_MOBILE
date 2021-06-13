@@ -1,16 +1,17 @@
 import React from 'react';
 import TomatoxCard from '../tomatox-card/tomatox-card';
 import {FlatList, StyleSheet, Text} from 'react-native';
+import {TOMATOX_THEME} from "../../utils/theme";
 
 const style = StyleSheet.create({
     contentList: {
-        backgroundColor: '#2b2b2b',
+        backgroundColor: TOMATOX_THEME.BACKGROUND_COLOR,
         flex: 1,
         padding: 7,
     },
     contentFooter: {
         textAlign: 'center',
-        color: '#f1f1f1',
+        color: TOMATOX_THEME.FONT_COLOR,
         height: 50,
         lineHeight: 40,
     },

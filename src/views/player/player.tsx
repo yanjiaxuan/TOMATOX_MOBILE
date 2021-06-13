@@ -4,10 +4,11 @@ import TomatoxVideo from '../../components/tomatox-video/tomatox-video';
 import TomatoxDrawer from '../../components/tomatox-drawer/tomatox-drawer';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import Orientation from 'react-native-orientation-locker';
+import {TOMATOX_THEME} from '../../utils/theme';
 
 const style = StyleSheet.create({
     playerWrapper: {
-        backgroundColor: '#2b2b2b',
+        backgroundColor: TOMATOX_THEME.BACKGROUND_COLOR,
         height: '100%',
         display: 'flex',
         flexDirection: 'column',

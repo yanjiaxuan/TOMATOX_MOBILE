@@ -3,20 +3,20 @@ import {
     Image,
     StyleSheet,
     Text,
-    View
+    View,
 } from 'react-native';
 import TIcon from '../../images/png/tomatox.png';
 import {queryTypes} from '../../utils/request';
-import LinearGradient from 'react-native-linear-gradient';
 import TomatoxWaterfall from '../../components/tomatox-waterfall/tomatox-waterfall';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import SplashScreen from 'react-native-splash-screen'
+import SplashScreen from 'react-native-splash-screen';
+import {TOMATOX_THEME} from '../../utils/theme';
 
 let TabViewCache: any;
-const TopTab = createMaterialTopTabNavigator()
+const TopTab = createMaterialTopTabNavigator();
 
 function topTabScreen(type: number) {
-    return () => <TomatoxWaterfall type={type} />
+    return () => <TomatoxWaterfall type={type} />;
 }
 export default class Recommend extends React.Component<any, any>{
 
@@ -40,16 +40,16 @@ export default class Recommend extends React.Component<any, any>{
                     lazy={true}
                     swipeEnabled={true}
                     tabBarPosition={'top'}
-                    sceneContainerStyle={{backgroundColor: '#2b2b2b'}}
-                    backBehavior={"none"}
+                    sceneContainerStyle={{backgroundColor: TOMATOX_THEME.BACKGROUND_COLOR}}
+                    backBehavior={'none'}
                     tabBarOptions={{
                         showLabel: true,
                         showIcon: false,
                         scrollEnabled: true,
-                        activeTintColor: '#ff5c49',
-                        inactiveTintColor: '#f1f1f1',
+                        activeTintColor: TOMATOX_THEME.THEME_COLOR,
+                        inactiveTintColor: TOMATOX_THEME.FONT_COLOR,
                         labelStyle: {fontSize: 14},
-                        indicatorStyle: {height: 4, backgroundColor: '#ff5c49', borderRadius: 20},
+                        indicatorStyle: {height: 4, backgroundColor: TOMATOX_THEME.THEME_COLOR},
                         tabStyle: {width: 'auto', marginLeft: 5,marginRight:5, marginBottom: 3, padding: 0, height: 40},
                         style: { backgroundColor: 'transparent' },
                         pressColor: 'transparent',
@@ -64,7 +64,7 @@ export default class Recommend extends React.Component<any, any>{
                         />
                     ))}
                 </TopTab.Navigator>
-        )
+        );
 
         return TabViewCache;
     }
@@ -75,7 +75,7 @@ export default class Recommend extends React.Component<any, any>{
             this.setState({
                 classifyList: res,
             });
-            SplashScreen.hide()
+            SplashScreen.hide();
         });
     }
     render(): React.ReactNode {
@@ -104,7 +104,7 @@ export default class Recommend extends React.Component<any, any>{
 
 const style = StyleSheet.create({
     fullWrapper: {
-        backgroundColor: '#2b2b2b',
+        backgroundColor: TOMATOX_THEME.BACKGROUND_COLOR,
         flex: 1,
     },
     titleBar: {
@@ -122,7 +122,7 @@ const style = StyleSheet.create({
     },
     titleInput: {
         flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.2)',
+        backgroundColor: TOMATOX_THEME.COMPONENT_DARK_BACKGROUND,
         height: 30,
         paddingTop: 0,
         paddingBottom: 0,
@@ -130,23 +130,23 @@ const style = StyleSheet.create({
         paddingLeft: 15,
         paddingRight: 15,
         marginRight: 15,
-        justifyContent: "center"
+        justifyContent: 'center',
     },
     titleInputText: {
-        color: '#a1a1a1'
+        color: TOMATOX_THEME.DISABLED_FONT_COLOR,
     },
     titleText: {
-        color: '#f1f1f1',
+        color: TOMATOX_THEME.FONT_COLOR,
     },
     tabLabel: {
-        color: '#f1f1f1',
+        color: TOMATOX_THEME.FONT_COLOR,
         marginLeft: 20,
         textAlign: 'center',
         paddingBottom: 5,
     },
     tabLabelActive: {
-        color: '#ff5c49',
+        color: TOMATOX_THEME.THEME_COLOR,
         borderBottomWidth: 4,
-        borderBottomColor: '#ff5c49',
+        borderBottomColor: TOMATOX_THEME.THEME_COLOR,
     },
 });
