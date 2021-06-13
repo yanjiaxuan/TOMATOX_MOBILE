@@ -1,12 +1,17 @@
 import React from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity} from 'react-native';
-import {useNavigation} from '@react-navigation/native'
+import {Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import constants from '../../utils/constants';
 
 export default function tomatoxCard(props: { data: IplayResource }) {
     const {navigate} = useNavigation();
     return (
         <TouchableOpacity style={style.card} activeOpacity={1} onPress={() => navigate('Player', props.data)}>
-            <Image source={{uri: props.data.picture}} style={style.cardImg} resizeMode={'cover'} />
+            <Image
+                source={props.data.picture ? {uri: props.data.picture} : require('../../images/png/loading.png')}
+                style={style.cardImg}
+                resizeMode={'cover'}
+            />
             <Text style={style.cardName} numberOfLines={1} ellipsizeMode={'tail'}>{props.data.name}</Text>
             <Text style={style.cardDesc} numberOfLines={1} ellipsizeMode={'tail'}>{props.data.actor || '未知'}</Text>
         </TouchableOpacity>
@@ -22,6 +27,7 @@ const style = StyleSheet.create({
     cardImg: {
         width: '100%',
         height: 110,
+        backgroundColor: 'rgba(0,0,0,0.2)',
         borderRadius: 5,
     },
     cardName: {

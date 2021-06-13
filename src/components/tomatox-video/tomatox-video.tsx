@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Dimensions, GestureResponderEvent, StyleSheet, Text, View} from 'react-native';
+import {Dimensions, GestureResponderEvent, StatusBar, StyleSheet, Text, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Slider from '@react-native-community/slider';
 import Video from 'react-native-video';
@@ -146,6 +146,7 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
         if (type === 'PORTRAIT') {
             setFullScreen(false);
             setVideoHeight(defaultVideoHeight)
+            StatusBar.setHidden(false)
         }
     };
 
@@ -175,8 +176,10 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
 
     const switchScreenState = () => {
         if (fullScreen) {
+            StatusBar.setHidden(false)
             Orientation.lockToPortrait();
         } else {
+            StatusBar.setHidden(true)
             Orientation.lockToLandscape();
         }
         setVideoHeight(fullScreen ? defaultVideoHeight : fsVideoHeight);
@@ -331,7 +334,6 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
                 resizeMode={'contain'}
                 fullscreen={fullScreen}
                 onLoadStart={() => setProcessCenterInfo('加载中，请稍候...')}
-                onError={() => setProcessCenterInfo('视频加载异常')}
                 onBuffer={() => setProcessCenterInfo('正在缓冲...')}
             />
         </View>

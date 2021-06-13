@@ -135,7 +135,7 @@ const style = StyleSheet.create({
         fontSize: 11,
         width: 75,
         height: 30,
-        lineHeight: 35,
+        lineHeight: 30,
         textAlign: 'center',
         color: '#dddddd',
         marginTop: 4,

@@ -81,7 +81,7 @@ export default class Recommend extends React.Component<any, any>{
     render(): React.ReactNode {
         return (
             <View style={style.fullWrapper}>
-                <LinearGradient colors={['#232222', '#2b2b2b']} style={{height: 50}}>
+                <View style={{height: 50}}>
                     <View style={style.titleBar}>
                         <Image source={TIcon} style={style.titleImg} />
                         <View style={style.titleInput} onTouchEnd={() => this.props.navigation.navigate('Search')}>
@@ -89,7 +89,7 @@ export default class Recommend extends React.Component<any, any>{
                         </View>
                         <Text onPress={() => this.props.navigation.navigate('Search')} style={style.titleText}>搜索</Text>
                     </View>
-                </LinearGradient>
+                </View>
                 { this.createTabView() }
             </View>
         );

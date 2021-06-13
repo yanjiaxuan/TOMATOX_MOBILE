@@ -26,7 +26,6 @@ export default function tomatoxWaterfall(props: {type?: number, keyword?: string
      * if you need param cross component, use refHook define it, otherwise, just define a normal parameter
      */
     const getMoreData = (init: boolean) => {
-        console.log('getMoreData', init)
         if (init) {
             setHaveMoreData(true)
             curPageRef.current = 0
