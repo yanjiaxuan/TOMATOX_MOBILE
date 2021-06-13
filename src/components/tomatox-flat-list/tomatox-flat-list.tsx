@@ -22,6 +22,8 @@ export default function tomatoxFlatList(props: {loadMore: any, data: any, haveMo
               numColumns={3}
               onEndReached={props.loadMore}
               onEndReachedThreshold={0.7}
+              showsHorizontalScrollIndicator={false}
+              showsVerticalScrollIndicator={false}
               renderItem={({item}) => <TomatoxCard key={item.id} data={item} />}
               ListFooterComponent={(
                   <Text style={style.contentFooter}>{props.haveMoreData ? '正在加载数据...' : '到底啦~'}</Text>
