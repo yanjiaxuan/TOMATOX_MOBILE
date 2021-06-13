@@ -41,14 +41,14 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
     const touchHandler = {
         onTouchMove: (event: GestureResponderEvent) => {
             resetTimmer();
-            const {locationX, locationY} = event.nativeEvent;
-            const xOffset = locationX - posX;
-            const yOffset = locationY - posY;
+            const {pageX, pageY} = event.nativeEvent;
+            const xOffset = pageX - posX;
+            const yOffset = pageY - posY;
             if (touchMoveCount <= 3) {
                 touchMoveCount++;
                 if (touchMoveCount === 1) {
-                    posX = locationX;
-                    posY = locationY;
+                    posX = pageX;
+                    posY = pageY;
                 }
                 if (touchMoveCount === 3) {
                     if (Math.abs(xOffset) > Math.abs(yOffset)) {
@@ -56,7 +56,7 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
                     } else {
                         const width = fullScreen ? windowHeight : windowWidth;
                         // 纵向，控制音量和亮度
-                        if (locationX < width / 2) {
+                        if (pageX < width / 2) {
                             direction = 2;   // 亮度
                         } else {
                             direction = 3;   // 音量
@@ -96,8 +96,8 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
                     break;
             }
 
-            posX = locationX;
-            posY = locationY;
+            posX = pageX;
+            posY = pageY;
         },
         onTouchStart: (event: GestureResponderEvent) => {
             controlState = showControl;
