@@ -18,6 +18,7 @@ export default function search() {
                 <TextInput
                     style={style.searchInput}
                     placeholder={'电影、电视剧、综艺...'}
+                    placeholderTextColor={'#a1a1a1'}
                     autoFocus={true}
                     onSubmitEditing={searchByKeyword}
                     returnKeyType={'search'}
@@ -43,8 +44,7 @@ const style = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         flexWrap: 'nowrap',
-        height: 35,
-        marginBottom: 15
+        height: 40
     },
     searchInput: {
         flex: 1,
