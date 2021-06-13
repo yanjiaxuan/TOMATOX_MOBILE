@@ -3,7 +3,7 @@ import {Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react
 import Drawer from 'react-native-drawer';
 import ResourceInfo from './resouce-info';
 import Icon from 'react-native-vector-icons/Feather';
-import {TOMATOX_THEME} from "../../utils/theme";
+import {TOMATOX_THEME} from '../../utils/theme';
 
 export default function tomatoxDrawer(props: { resource: IplayResource, curPlay: string, changePlay: (key: string) => void }) {
     const [showDrawer, setShowDrawer] = useState(false);

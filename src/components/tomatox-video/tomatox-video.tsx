@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Dimensions, GestureResponderEvent, StatusBar, StyleSheet, Text, View} from 'react-native';
+import {GestureResponderEvent, StatusBar, StyleSheet, Text, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Slider from '@react-native-community/slider';
 import Video from 'react-native-video';
@@ -9,6 +9,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Orientation, {OrientationType} from 'react-native-orientation-locker';
 import SystemSetting from 'react-native-system-setting';
 import {TOMATOX_THEME} from '../../utils/theme';
+import constants from '../../utils/constants';
 
 let timmerId:any;
 let posX: any;
@@ -19,10 +20,8 @@ let controlState = false;
 let touchMoveCount = 0;
 let switchTimmerId: any;
 SystemSetting.getBrightness().then(bri => {brightness = bri;});
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 const defaultVideoHeight = 250;
-const fsVideoHeight = windowWidth as number;
+const fsVideoHeight = constants.WINDOW_WIDTH as number;
 export default function tomatoxVideo (props: {src: string, back: () => void, playNext: (cb: () => void) => void}) {
     const [videoInstance, setVideoInstance] = useState<Video>();
     const [seeking, setSeeking] = useState(false);
@@ -34,6 +33,7 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
     const [showControl, setShowControl] = useState(false);
     const [processCenterInfo, setProcessCenterInfo] = useState('');
     const [videoHeight, setVideoHeight] = useState(defaultVideoHeight);
+    const [bufferingText, setBufferingText] = useState('');
     const touchStartTime = useRef(0);
     useEffect(() => {
         Orientation.addLockListener(orientationListener);
@@ -55,7 +55,7 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
                     if (Math.abs(xOffset) > Math.abs(yOffset)) {
                         direction = 1;   // 横向，控制进度
                     } else {
-                        const width = fullScreen ? windowHeight : windowWidth;
+                        const width = fullScreen ? constants.WINDOW_HEIGHT : constants.WINDOW_WIDTH;
                         // 纵向，控制音量和亮度
                         if (pageX < width / 2) {
                             direction = 2;   // 亮度
@@ -321,8 +321,8 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
                 {...touchHandler}
             >
                 {
-                    Boolean(processCenterInfo) &&
-                    <Text style={style.videoControlCenterContent}>{processCenterInfo}</Text>
+                    Boolean(processCenterInfo || bufferingText) &&
+                    <Text style={style.videoControlCenterContent}>{processCenterInfo || bufferingText}</Text>
                 }
             </View>
             <Video
@@ -339,7 +339,7 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
                 resizeMode={'contain'}
                 fullscreen={fullScreen}
                 onLoadStart={() => setProcessCenterInfo('加载中，请稍候...')}
-                onBuffer={() => setProcessCenterInfo('正在缓冲...')}
+                onBuffer={({isBuffering}) => setBufferingText(isBuffering ? '正在缓冲...' : '')}
             />
         </View>
     );
