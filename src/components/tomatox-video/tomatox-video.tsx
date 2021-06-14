@@ -134,7 +134,6 @@ export default class TomatoxVideo extends React.Component<{
                 // 判定操作类型
                 const xOffsetAbs = Math.abs(pageX - this.initPosX)
                 const yOffsetAbs = Math.abs(pageY - this.initPosY)
-                console.log(xOffsetAbs, yOffsetAbs)
                 if (xOffsetAbs > 5 || yOffsetAbs > 5) {
                     if (xOffsetAbs * 2 > yOffsetAbs) {
                         // 横向，播放进度
@@ -204,7 +203,6 @@ export default class TomatoxVideo extends React.Component<{
             this.touchStartTime = Date.now();
         },
         onTouchEnd: () => {
-            const now = Date.now();
             this.posX = this.initPosX = this.posY = this.initPosY = undefined;
             this.setState({noticeInfo: ''});
             switch (this.touchType) {
@@ -383,7 +381,7 @@ export default class TomatoxVideo extends React.Component<{
                 {
                     this.state.showVideoControl &&
                     <View style={style.videoControl}>
-                        <Animated.View style={{opacity: this.controlBarAnimatedOpacity}}>
+                        <Animated.View style={{opacity: this.controlBarAnimatedOpacity}} >
                             <LinearGradient colors={['rgba(0,0,0,0.7)', 'rgba(0,0,0,0)']} style={style.videoControlTop}>
                                 <TouchableOpacity onPress={this.processGoBack}>
                                     <Icon name={'chevron-left'} style={style.topBtn} />
@@ -393,7 +391,7 @@ export default class TomatoxVideo extends React.Component<{
                                 </TouchableOpacity>
                             </LinearGradient>
                         </Animated.View>
-                        <Animated.View style={{opacity: this.controlBarAnimatedOpacity}}>
+                        <Animated.View style={{opacity: this.controlBarAnimatedOpacity}} >
                             <LinearGradient colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.7)']}
                                             style={style.videoControlBottom}>
                                 <TouchableOpacity onPress={() => {this.resetControlShowTimmer(); this.setState({ playing: !this.state.playing });}}>
@@ -438,7 +436,7 @@ export default class TomatoxVideo extends React.Component<{
                     onLoad={this.onVideoLoad} // when loaded, record fullTime
                     onProgress={data => !this.seeking && this.setState({playPosition: data.currentTime})} // update cur play time
                     onEnd={() => this.props.playNext(this.handlePlayEnd)}    // auto play next
-                    onTouchEnd={() => {this.touchScreenTaskId = 123; this.switchControl();}}
+                    onTouchEnd={() => {this.touchScreenTaskId = 9999; this.switchControl();}}
                     paused={!this.state.playing}
                     repeat={false}
                     volume={this.state.volume}
