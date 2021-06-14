@@ -27,6 +27,7 @@ export default class TomatoxVideo extends React.Component<{src: string, playNext
     private touchMoveCount = 0
     private touchType = -1
     private curShowVideoControl = false
+    private selfIsAlive = true
 
     constructor(props: any) {
         super(props);
@@ -43,6 +44,14 @@ export default class TomatoxVideo extends React.Component<{src: string, playNext
         };
     }
 
+    private setLifecycleTimeout = (callBack: Function, delay: number) => {
+        return setTimeout(() => {
+            if (this.selfIsAlive) {
+                callBack()
+            }
+        }, delay)
+    }
+
     private handlePlayEnd = () => {
         this.setState({
             playing: false,
@@ -56,7 +65,7 @@ export default class TomatoxVideo extends React.Component<{src: string, playNext
             this.videoControlHideTaskId && clearTimeout(this.videoControlHideTaskId);
             this.videoControlHideTaskId = undefined;
         } else {
-            this.videoControlHideTaskId = setTimeout(() => {
+            this.videoControlHideTaskId = this.setLifecycleTimeout(() => {
                 this.setState({
                     showVideoControl: false,
                 });
@@ -73,7 +82,7 @@ export default class TomatoxVideo extends React.Component<{src: string, playNext
             showVideoControl: true,
         });
         this.videoControlHideTaskId && clearTimeout(this.videoControlHideTaskId);
-        this.videoControlHideTaskId = setTimeout(() => {
+        this.videoControlHideTaskId = this.setLifecycleTimeout(() => {
             this.setState({
                 showVideoControl: false,
             });
@@ -190,7 +199,7 @@ export default class TomatoxVideo extends React.Component<{src: string, playNext
             switch (this.touchType) {
                 case 1:
                     this.videoInstance?.seek(this.state.playPosition);
-                    setTimeout(() => this.seeking = false, 1000);
+                    this.setLifecycleTimeout(() => this.seeking = false, 1000);
                     break;
                 case 2:
                 case 3:
@@ -210,7 +219,7 @@ export default class TomatoxVideo extends React.Component<{src: string, playNext
                     this.resetControlShowTimmer();
                 } else {
                     // 单击，切换控制层状态
-                    this.touchScreenTaskId = setTimeout(() => {
+                    this.touchScreenTaskId = this.setLifecycleTimeout(() => {
                         this.curShowVideoControl === this.state.showVideoControl && this.switchControl();
                         this.touchScreenTaskId = undefined;
                     },500);
@@ -234,6 +243,7 @@ export default class TomatoxVideo extends React.Component<{src: string, playNext
         Orientation.addLockListener(this.orientationListener);
     }
     componentWillUnmount(): void {
+        this.selfIsAlive = false
         BackHandler.removeEventListener('hardwareBackPress', this.processGoBack)
         Orientation.removeLockListener(this.orientationListener);
     }
@@ -348,7 +358,7 @@ export default class TomatoxVideo extends React.Component<{src: string, playNext
                                 maximumTrackTintColor={TOMATOX_THEME.UNIMPORTANT_FONT_COLOR}
                                 thumbTintColor={TOMATOX_THEME.THEME_COLOR}
                                 onTouchStart={() => this.seeking = true}
-                                onSlidingComplete={() => {this.videoInstance?.seek(this.curTimeCache); setTimeout(() => this.seeking = false, 1000);}}
+                                onSlidingComplete={() => {this.videoInstance?.seek(this.curTimeCache); this.setLifecycleTimeout(() => this.seeking = false, 1000);}}
                                 onValueChange={value => {this.curTimeCache = value; this.setState({playPosition: value}); this.resetControlShowTimmer();}}
                             />
                             <Text style={style.videoProcess}>
