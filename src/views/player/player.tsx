@@ -1,9 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import {BackHandler, StyleSheet, Text, View} from 'react-native';
+import React, {useState} from 'react';
+import {StyleSheet, View} from 'react-native';
 import TomatoxVideo from '../../components/tomatox-video/tomatox-video';
 import TomatoxDrawer from '../../components/tomatox-drawer/tomatox-drawer';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import Orientation from 'react-native-orientation-locker';
+import {useRoute} from '@react-navigation/native';
 import {TOMATOX_THEME} from '../../utils/theme';
 
 const style = StyleSheet.create({
@@ -15,27 +14,10 @@ const style = StyleSheet.create({
     },
 });
 
-export default function (props: any) {
-    const navigation = useNavigation();
+export default function () {
     const {params} = useRoute();
-    const resource = params as IplayResource;
+    const resource = params as IPlayResource;
     const [curPlay, setCurPlay] = useState(resource.playList.index[0]);
-
-    useEffect(() => {
-        BackHandler.addEventListener('hardwareBackPress', goBack);
-        return () => BackHandler.removeEventListener('hardwareBackPress', goBack);
-    });
-
-    function goBack() {
-        Orientation.getOrientation(orientation => {
-            if (orientation === 'PORTRAIT') {
-                navigation.goBack();
-            } else {
-                Orientation.lockToPortrait();
-            }
-        });
-        return true;
-    }
 
     const playNext = (noNext: () => void) => {
         const idx = resource.playList.index.indexOf(curPlay);
@@ -50,7 +32,6 @@ export default function (props: any) {
         <View style={style.playerWrapper}>
             <TomatoxVideo
                 src={resource.playList.mapper[curPlay]}
-                back={goBack}
                 playNext={playNext}
             />
             <TomatoxDrawer resource={resource} curPlay={curPlay} changePlay={key => setCurPlay(key)}/>

@@ -2,7 +2,7 @@ export function filterResources(resources: any[]) {
     return resources.map(res => filterResource(res));
 }
 
-export function filterResource(resource: any): IplayResource {
+export function filterResource(resource: any): IPlayResource {
     return {
         id: resource.vod_id,
         type: resource.type_name,

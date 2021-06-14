@@ -3,7 +3,7 @@ import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {TOMATOX_THEME} from "../../utils/theme";
 
-export default function tomatoxCard(props: { data: IplayResource }) {
+export default function tomatoxCard(props: { data: IPlayResource }) {
     const {navigate} = useNavigation();
     return (
         <TouchableOpacity style={style.card} activeOpacity={1} onPress={() => navigate('Player', props.data)}>

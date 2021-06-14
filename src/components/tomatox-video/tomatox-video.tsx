@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {GestureResponderEvent, StatusBar, StyleSheet, Text, View} from 'react-native';
+import {BackHandler, GestureResponderEvent, StatusBar, StyleSheet, Text, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Slider from '@react-native-community/slider';
 import Video from 'react-native-video';
@@ -10,6 +10,7 @@ import Orientation, {OrientationType} from 'react-native-orientation-locker';
 import SystemSetting from 'react-native-system-setting';
 import {TOMATOX_THEME} from '../../utils/theme';
 import constants from '../../utils/constants';
+import {useNavigation} from '@react-navigation/native'
 
 let timmerId:any;
 let posX: any;
@@ -22,7 +23,8 @@ let switchTimmerId: any;
 SystemSetting.getBrightness().then(bri => {brightness = bri;});
 const defaultVideoHeight = 250;
 const fsVideoHeight = constants.WINDOW_WIDTH as number;
-export default function tomatoxVideo (props: {src: string, back: () => void, playNext: (cb: () => void) => void}) {
+export default function tomatoxVideo (props: {src: string, playNext: (cb: () => void) => void}) {
+    const navigation = useNavigation();
     const [videoInstance, setVideoInstance] = useState<Video>();
     const [seeking, setSeeking] = useState(false);
     const [playState, setPlayState] = useState(true);
@@ -35,6 +37,13 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
     const [videoHeight, setVideoHeight] = useState(defaultVideoHeight);
     const [bufferingText, setBufferingText] = useState('');
     const touchStartTime = useRef(0);
+    // Listen physic back button
+    useEffect(() => {
+        BackHandler.addEventListener('hardwareBackPress', processGoBack);
+        return () => {
+            BackHandler.removeEventListener('hardwareBackPress', processGoBack)
+        };
+    });
     useEffect(() => {
         Orientation.addLockListener(orientationListener);
         return () => Orientation.removeLockListener(orientationListener);
@@ -192,8 +201,9 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
         if (fullScreen) {
             switchScreenState();
         } else {
-            props.back();
+            navigation.goBack();
         }
+        return true
     };
 
     const style = StyleSheet.create({
@@ -327,7 +337,7 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
             </View>
             <Video
                 ref={(instance: Video) => setVideoInstance(instance)}
-                onLoad={data => {setProcessCenterInfo(''); setFullTime(data.duration);}} // when loaded, record fullTime
+                onLoad={data => setFullTime(data.duration)} // when loaded, record fullTime
                 onProgress={data => !seeking && setCurTime(data.currentTime)} // update cur play time
                 onEnd={() => props.playNext(handlePlayEnd)}    // auto play next
                 onTouchEnd={() => {switchTimmerId = 123; switchControl();}}
@@ -338,7 +348,7 @@ export default function tomatoxVideo (props: {src: string, back: () => void, pla
                 style={style.video}
                 resizeMode={'contain'}
                 fullscreen={fullScreen}
-                onLoadStart={() => setProcessCenterInfo('加载中，请稍候...')}
+                // onLoadStart={() => setProcessCenterInfo('加载中，请稍候...')}
                 onBuffer={({isBuffering}) => setBufferingText(isBuffering ? '正在缓冲...' : '')}
             />
         </View>

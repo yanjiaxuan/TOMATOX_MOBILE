@@ -3,16 +3,32 @@ import {Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react
 import Drawer from 'react-native-drawer';
 import ResourceInfo from './resouce-info';
 import Icon from 'react-native-vector-icons/Feather';
+import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {TOMATOX_THEME} from '../../utils/theme';
+import {deleteData, insertOrUpdateData, queryData} from '../../utils/storage/storage';
+import {TABLE_NAME} from '../../utils/storage/table-define';
 
-export default function tomatoxDrawer(props: { resource: IplayResource, curPlay: string, changePlay: (key: string) => void }) {
+export default function tomatoxDrawer(props: { resource: IPlayResource, curPlay: string, changePlay: (key: string) => void }) {
     const [showDrawer, setShowDrawer] = useState(false);
+    const [isCollect, updateCollect] = useState(Boolean(queryData(TABLE_NAME.TOMATOX_COLLECT, props.resource.id)));
 
     function showDetailDrawer() {
         setShowDrawer(!showDrawer);
     }
     function developing() {
-        Alert.alert('Developing', '功能正在开发中...')
+        Alert.alert('Developing', '功能正在开发中...');
+    }
+
+    function collectResource() {
+        updateCollect(!isCollect);
+        if (isCollect) {
+            deleteData(TABLE_NAME.TOMATOX_COLLECT, props.resource.id);
+        } else {
+            insertOrUpdateData(TABLE_NAME.TOMATOX_COLLECT, {
+                ...props.resource,
+                collectDate: Date.now(),
+            });
+        }
     }
 
     return (
@@ -41,8 +57,11 @@ export default function tomatoxDrawer(props: { resource: IplayResource, curPlay:
                         </TouchableOpacity>
                     </View>
                     <View style={style.playOption}>
-                        <TouchableOpacity onPress={developing}>
-                            <Icon name={'heart'} style={style.playerOptionIcon} />
+                        <TouchableOpacity onPress={collectResource}>
+                            <MaterialIcon name={isCollect ? 'heart' : 'heart-outline'} style={[
+                                isCollect ? style.playerOptionIconActive : style.playerOptionIcon,
+                                {fontSize: 24}
+                            ]} />
                             <Text style={style.playerOptionTitle}>收藏</Text>
                         </TouchableOpacity>
                     </View>
@@ -89,7 +108,7 @@ export default function tomatoxDrawer(props: { resource: IplayResource, curPlay:
 const style = StyleSheet.create({
     playerInfoWrapper: {
         padding: 10,
-        backgroundColor: TOMATOX_THEME.BACKGROUND_COLOR
+        backgroundColor: TOMATOX_THEME.BACKGROUND_COLOR,
     },
     playInfoTitle: {
         fontWeight: 'bold',
@@ -121,6 +140,11 @@ const style = StyleSheet.create({
     playerOptionIcon: {
         fontSize: 22,
         color: TOMATOX_THEME.FONT_COLOR,
+        marginBottom: 5,
+    },
+    playerOptionIconActive: {
+        fontSize: 22,
+        color: TOMATOX_THEME.THEME_COLOR,
         marginBottom: 5,
     },
     playerOptionTitle: {

@@ -3,7 +3,7 @@ import {Image, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react
 import Icon from 'react-native-vector-icons/Feather';
 import {TOMATOX_THEME} from "../../utils/theme";
 
-export default function resourceInfo(props: {resource: IplayResource, close: () => void}) {
+export default function resourceInfo(props: {resource: IPlayResource, close: () => void}) {
     return (
         <View style={style.infoWrapper}>
             <View style={style.infoTitle}>

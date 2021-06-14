@@ -4,7 +4,7 @@ import {queryResources} from '../../utils/request';
 import {filterResources} from '../../utils/filterResources';
 
 export default function tomatoxWaterfall(props: {type?: number, keyword?: string}) {
-    const [resourceList, setResourceList] = useState<IplayResource[]>([]);
+    const [resourceList, setResourceList] = useState<IPlayResource[]>([]);
     const [haveMoreData, setHaveMoreData] = useState(true);
     const curPageRef = useRef(0)
     const pageCountRef = useRef(10)
