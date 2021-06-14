@@ -26,6 +26,10 @@ export default function tomatoxDrawer(props: { resource: IPlayResource, curPlay:
         } else {
             insertOrUpdateData(TABLE_NAME.TOMATOX_COLLECT, {
                 ...props.resource,
+                historyPlayKey: undefined,
+                historyPlayTime: undefined,
+                historyPlayDesc: undefined,
+                historyPlayDate: undefined,
                 collectDate: Date.now(),
             });
         }

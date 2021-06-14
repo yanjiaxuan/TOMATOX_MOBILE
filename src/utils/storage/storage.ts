@@ -1,7 +1,8 @@
 import Realm from 'realm';
-import {TABLE_DEFINE} from './table-define';
+import {TABLE_DEFINE, TABLE_NAME} from './table-define';
 import {convertDataFromDB, convertDataToDB} from "./data-converter";
 
+const ONE_WEEK = 7 * 24 * 3600 * 1000
 let realm: Realm | undefined;
 export default async function initStorage() {
     realm = await Realm.open({
@@ -9,6 +10,16 @@ export default async function initStorage() {
         schemaVersion: 1,
         schema: [TABLE_DEFINE.TOMATOX_COLLECT, TABLE_DEFINE.TOMATOX_HISTORY],
     });
+    cleanOutdateData()
+}
+
+export function cleanOutdateData() {
+    const now = Date.now()
+    realm?.write(() => {
+        // @ts-ignore
+        const needDeleted = realm?.objects(TABLE_NAME.TOMATOX_HISTORY).filter(item => now - item.historyPlayDate > ONE_WEEK)
+        realm?.delete(needDeleted)
+    })
 }
 
 export function insertOrUpdateData(tableName: string, data: IPlayHistoryResource|IPlayCollectResource) {

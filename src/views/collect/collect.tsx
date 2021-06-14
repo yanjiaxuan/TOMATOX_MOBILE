@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {TABLE_NAME} from '../../utils/storage/table-define';
 import {queryAll} from '../../utils/storage/storage';
 import TomatoxFlatList from '../../components/tomatox-flat-list/tomatox-flat-list';

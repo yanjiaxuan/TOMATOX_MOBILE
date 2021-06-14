@@ -1,5 +1,5 @@
 import React from 'react';
-import Video from 'react-native-video';
+import Video, {OnLoadData} from 'react-native-video';
 import Orientation, {OrientationType} from 'react-native-orientation-locker';
 import {BackHandler, GestureResponderEvent, StatusBar, StyleSheet, Text, View} from 'react-native';
 import constants from '../../utils/constants';
@@ -13,7 +13,13 @@ import Slider from '@react-native-community/slider';
 
 let screenBrightness = 1;
 
-export default class TomatoxVideo extends React.Component<{src: string, playNext: (cb: () => void) => void, navigation: any}, any>{
+export default class TomatoxVideo extends React.Component<{
+    src: string,
+    lastSeek?: number,
+    playNext: (cb: () => void) => void,
+    onBack: (playPosition: number) => any,
+    navigation: any
+}, any> {
     private videoInstance: Video|undefined
     private seeking = false
     private curTimeCache = 0
@@ -41,15 +47,16 @@ export default class TomatoxVideo extends React.Component<{src: string, playNext
             noticeInfo: '',
             videoHeight: this.defaultVideoHeight,
             bufferingInfo: '',
+            locationInfo: '',
         };
     }
 
     private setLifecycleTimeout = (callBack: Function, delay: number) => {
         return setTimeout(() => {
             if (this.selfIsAlive) {
-                callBack()
+                callBack();
             }
-        }, delay)
+        }, delay);
     }
 
     private handlePlayEnd = () => {
@@ -127,7 +134,7 @@ export default class TomatoxVideo extends React.Component<{src: string, playNext
                     this.posY = pageY;
                 }
                 if (this.touchMoveCount === 2) {
-                    if (Math.abs(xOffset) > Math.abs(yOffset)) {
+                    if (Math.abs(xOffset * 2) > Math.abs(yOffset)) {
                         this.touchType = 1;   // 横向，控制进度
                     } else {
                         const width = this.state.isFullScreen ? constants.WINDOW_HEIGHT : constants.WINDOW_WIDTH;
@@ -143,7 +150,7 @@ export default class TomatoxVideo extends React.Component<{src: string, playNext
             }
             switch (this.touchType) {
                 case 1:
-                    this.seeking = true
+                    this.seeking = true;
                     const playPos = xOffset > 0 ? Math.min(this.state.videoFullTime, this.state.playPosition + xOffset * 2) :
                         Math.max(0, this.state.playPosition + xOffset * 2);
                     this.setState({
@@ -173,7 +180,7 @@ export default class TomatoxVideo extends React.Component<{src: string, playNext
                         // 音量+
                         this.setState({
                             volume: Math.min(1, this.state.volume - yOffset * 0.008),
-                            noticeInfo: `音量：${Math.floor(this.state.volume * 100)}%`
+                            noticeInfo: `音量：${Math.floor(this.state.volume * 100)}%`,
                         });
                     }
                     break;
@@ -238,14 +245,25 @@ export default class TomatoxVideo extends React.Component<{src: string, playNext
         }
     }
 
+    private onVideoLoad = (data: OnLoadData) => {
+        this.setState({videoFullTime: data.duration}, () => {
+            if (this.props.lastSeek) {
+                this.videoInstance?.seek(this.props.lastSeek)
+                this.setState({locationInfo: `已为您定位至${convertSecondToTime(this.props.lastSeek, this.props.lastSeek)}`})
+                this.setLifecycleTimeout(() => this.setState({locationInfo: ''}), 2500)
+            }
+        });
+    }
+
     componentDidMount(): void {
-        BackHandler.addEventListener('hardwareBackPress', this.processGoBack)
+        BackHandler.addEventListener('hardwareBackPress', this.processGoBack);
         Orientation.addLockListener(this.orientationListener);
     }
     componentWillUnmount(): void {
-        this.selfIsAlive = false
-        BackHandler.removeEventListener('hardwareBackPress', this.processGoBack)
+        this.selfIsAlive = false;
+        BackHandler.removeEventListener('hardwareBackPress', this.processGoBack);
         Orientation.removeLockListener(this.orientationListener);
+        this.props.onBack(this.state.playPosition);
     }
 
 
@@ -300,6 +318,20 @@ export default class TomatoxVideo extends React.Component<{src: string, playNext
                 paddingLeft: 15,
                 paddingRight: 15,
                 borderRadius: 5,
+            },
+            locationInfoContent: {
+                fontSize: 13,
+                color: TOMATOX_THEME.FONT_COLOR,
+                position: 'absolute',
+                top: this.state.videoHeight - 80,
+                backgroundColor: TOMATOX_THEME.COMPONENT_DARK_BACKGROUND,
+                paddingTop: 7,
+                paddingBottom: 7,
+                paddingLeft: 15,
+                paddingRight: 15,
+                borderRadius: 4,
+                left: 15,
+                zIndex: 10,
             },
             videoControlBottom: {
                 top: this.state.videoHeight - 90,
@@ -379,9 +411,10 @@ export default class TomatoxVideo extends React.Component<{src: string, playNext
                         <Text style={style.videoControlCenterContent}>{this.state.noticeInfo || this.state.bufferingInfo}</Text>
                     }
                 </View>
+                <Text style={style.locationInfoContent}>{this.state.locationInfo}</Text>
                 <Video
                     ref={(instance: Video) => this.videoInstance = instance}
-                    onLoad={data => this.setState({videoFullTime: data.duration})} // when loaded, record fullTime
+                    onLoad={this.onVideoLoad} // when loaded, record fullTime
                     onProgress={data => !this.seeking && this.setState({playPosition: data.currentTime})} // update cur play time
                     onEnd={() => this.props.playNext(this.handlePlayEnd)}    // auto play next
                     onTouchEnd={() => {this.touchScreenTaskId = 123; this.switchControl();}}

@@ -1,3 +1,7 @@
+function fix2(num: number) {
+    return (num < 10 ? '0' : '') + num
+}
+
 export function convertSecondToTime(date: number, full: number) {
     const useHours = full > 3600
     let handleTime = date;
@@ -13,4 +17,10 @@ export function convertSecondToTime(date: number, full: number) {
     target += handleTime < 10 ? `0${handleTime}` : `${handleTime}`;
 
     return target;
+}
+
+export function convertTimestampToDate(timestamp: number) {
+    const date = new Date(timestamp)
+
+    return `${date.getFullYear()}-${fix2(date.getMonth() + 1)}-${fix2(date.getDate())} ${fix2(date.getHours())}:${fix2(date.getMinutes())}`
 }
