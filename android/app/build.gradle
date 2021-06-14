@@ -194,6 +194,9 @@ android {
         checkReleaseBuilds false
         abortOnError false
     }
+    dexOptions {
+        javaMaxHeapSize "6g"
+    }
 }
 
 dependencies {

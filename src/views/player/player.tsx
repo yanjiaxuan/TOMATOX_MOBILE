@@ -4,6 +4,7 @@ import TomatoxVideo from '../../components/tomatox-video/tomatox-video';
 import TomatoxDrawer from '../../components/tomatox-drawer/tomatox-drawer';
 import {useRoute} from '@react-navigation/native';
 import {TOMATOX_THEME} from '../../utils/theme';
+import {useNavigation} from '@react-navigation/native'
 
 const style = StyleSheet.create({
     playerWrapper: {
@@ -15,6 +16,7 @@ const style = StyleSheet.create({
 });
 
 export default function () {
+    const navigation = useNavigation()
     const {params} = useRoute();
     const resource = params as IPlayResource;
     const [curPlay, setCurPlay] = useState(resource.playList.index[0]);
@@ -33,6 +35,7 @@ export default function () {
             <TomatoxVideo
                 src={resource.playList.mapper[curPlay]}
                 playNext={playNext}
+                navigation={navigation}
             />
             <TomatoxDrawer resource={resource} curPlay={curPlay} changePlay={key => setCurPlay(key)}/>
         </View>
