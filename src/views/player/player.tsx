@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import TomatoxVideo from '../../components/tomatox-video/tomatox-video';
 import TomatoxDrawer from '../../components/tomatox-drawer/tomatox-drawer';
@@ -23,6 +23,7 @@ export default function () {
     const {params} = useRoute();
     const [resource, setResource] = useState<IPlayResource|IPlayHistoryResource|IPlayCollectResource>(params as any);
     const [curPlay, setCurPlay] = useState(resource.playList.index[0]);
+    const init = useRef(true)
 
     useEffect(() => {
         const historyResource = queryData(TABLE_NAME.TOMATOX_HISTORY, resource.id) as IPlayHistoryResource|undefined
@@ -33,6 +34,7 @@ export default function () {
     }, [])
 
     const playNext = (noNext: () => void) => {
+        init.current = false
         const idx = resource.playList.index.indexOf(curPlay);
         if ( idx < resource.playList.index.length - 1) {
             setCurPlay(resource.playList.index[idx + 1]);
@@ -61,12 +63,12 @@ export default function () {
             <TomatoxVideo
                 src={resource.playList.mapper[curPlay]}
                 // @ts-ignore
-                lastSeek={resource.historyPlayTime}
+                lastSeek={init.current ? resource.historyPlayTime : undefined}
                 playNext={playNext}
                 onBack={writeHistoryRecord}
                 navigation={navigation}
             />
-            <TomatoxDrawer resource={resource} curPlay={curPlay} changePlay={key => setCurPlay(key)}/>
+            <TomatoxDrawer resource={resource} curPlay={curPlay} changePlay={key => {init.current = false; setCurPlay(key)}}/>
         </View>
     );
 }
