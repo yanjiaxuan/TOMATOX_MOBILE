@@ -36,7 +36,6 @@ export default class TomatoxVideo extends React.Component<{
     private curShowVideoControl = false
     private selfIsAlive = true
     private locationInfoAnimatedLeft = new Animated.Value(-200)
-    private controlBarAnimatedOpacity = new Animated.Value(0)
 
     constructor(props: any) {
         super(props);
@@ -74,16 +73,12 @@ export default class TomatoxVideo extends React.Component<{
         if (this.state.showVideoControl) {
             this.videoControlHideTaskId && clearTimeout(this.videoControlHideTaskId);
             this.videoControlHideTaskId = undefined;
-            Animated.timing(this.controlBarAnimatedOpacity, { toValue: 0, duration: 300, useNativeDriver: true }).start(() => {
-                this.setState({
-                    showVideoControl: false,
-                });
-                this.videoControlHideTaskId = undefined;
-            })
+            this.setState({
+                showVideoControl: false,
+            });
+            this.videoControlHideTaskId = undefined;
         } else {
-            this.setState({showVideoControl: true}, () => {
-                Animated.timing(this.controlBarAnimatedOpacity, { toValue: 1, duration: 300, useNativeDriver: true }).start()
-            })
+            this.setState({showVideoControl: true})
             this.videoControlHideTaskId = this.setLifecycleTimeout(() => {
                 this.switchControl()
             }, 5000);
@@ -91,9 +86,7 @@ export default class TomatoxVideo extends React.Component<{
     }
 
     private resetControlShowTimmer = () => {
-        this.setState({showVideoControl: true}, () => {
-            Animated.timing(this.controlBarAnimatedOpacity, { toValue: 1, duration: 300, useNativeDriver: true }).start()
-        })
+        this.setState({showVideoControl: true})
         this.videoControlHideTaskId && clearTimeout(this.videoControlHideTaskId);
         this.videoControlHideTaskId = this.setLifecycleTimeout(() => {
             this.switchControl();
@@ -381,42 +374,38 @@ export default class TomatoxVideo extends React.Component<{
                 {
                     this.state.showVideoControl &&
                     <View style={style.videoControl}>
-                        <Animated.View style={{opacity: this.controlBarAnimatedOpacity}} >
-                            <LinearGradient colors={['rgba(0,0,0,0.7)', 'rgba(0,0,0,0)']} style={style.videoControlTop}>
-                                <TouchableOpacity onPress={this.processGoBack}>
-                                    <Icon name={'chevron-left'} style={style.topBtn} />
-                                </TouchableOpacity>
-                                <TouchableOpacity>
-                                    <Icon name={'airplay'} style={style.topBtnRight} />
-                                </TouchableOpacity>
-                            </LinearGradient>
-                        </Animated.View>
-                        <Animated.View style={{opacity: this.controlBarAnimatedOpacity}} >
-                            <LinearGradient colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.7)']}
-                                            style={style.videoControlBottom}>
-                                <TouchableOpacity onPress={() => {this.resetControlShowTimmer(); this.setState({ playing: !this.state.playing });}}>
-                                    <Icon name={this.state.playing ? 'pause' : 'play'} style={style.videoPlayPause}/>
-                                </TouchableOpacity>
-                                <Slider
-                                    style={style.videoSlider}
-                                    value={this.state.playPosition}
-                                    minimumValue={0}
-                                    maximumValue={this.state.videoFullTime}
-                                    minimumTrackTintColor={TOMATOX_THEME.THEME_COLOR}
-                                    maximumTrackTintColor={TOMATOX_THEME.UNIMPORTANT_FONT_COLOR}
-                                    thumbTintColor={TOMATOX_THEME.THEME_COLOR}
-                                    onTouchStart={() => this.seeking = true}
-                                    onSlidingComplete={() => {this.videoInstance?.seek(this.curTimeCache); this.setLifecycleTimeout(() => this.seeking = false, 1000);}}
-                                    onValueChange={value => {this.curTimeCache = value; this.setState({playPosition: value}); this.resetControlShowTimmer();}}
-                                />
-                                <Text style={style.videoProcess}>
-                                    {`${convertSecondToTime(this.state.playPosition, this.state.videoFullTime)}/${convertSecondToTime(this.state.videoFullTime, this.state.videoFullTime)}`}
-                                </Text>
-                                <TouchableOpacity onPress={this.switchScreenState}>
-                                    <Icon name={this.state.isFullScreen ? 'minimize' : 'maximize'} style={style.videoFullScreen} />
-                                </TouchableOpacity>
-                            </LinearGradient>
-                        </Animated.View>
+                        <LinearGradient colors={['rgba(0,0,0,0.7)', 'rgba(0,0,0,0)']} style={style.videoControlTop}>
+                            <TouchableOpacity onPress={this.processGoBack}>
+                                <Icon name={'chevron-left'} style={style.topBtn} />
+                            </TouchableOpacity>
+                            <TouchableOpacity>
+                                <Icon name={'airplay'} style={style.topBtnRight} />
+                            </TouchableOpacity>
+                        </LinearGradient>
+                        <LinearGradient colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.7)']}
+                                        style={style.videoControlBottom}>
+                            <TouchableOpacity onPress={() => {this.resetControlShowTimmer(); this.setState({ playing: !this.state.playing });}}>
+                                <Icon name={this.state.playing ? 'pause' : 'play'} style={style.videoPlayPause}/>
+                            </TouchableOpacity>
+                            <Slider
+                                style={style.videoSlider}
+                                value={this.state.playPosition}
+                                minimumValue={0}
+                                maximumValue={this.state.videoFullTime}
+                                minimumTrackTintColor={TOMATOX_THEME.THEME_COLOR}
+                                maximumTrackTintColor={TOMATOX_THEME.UNIMPORTANT_FONT_COLOR}
+                                thumbTintColor={TOMATOX_THEME.THEME_COLOR}
+                                onTouchStart={() => this.seeking = true}
+                                onSlidingComplete={() => {this.videoInstance?.seek(this.curTimeCache); this.setLifecycleTimeout(() => this.seeking = false, 1000);}}
+                                onValueChange={value => {this.curTimeCache = value; this.setState({playPosition: value}); this.resetControlShowTimmer();}}
+                            />
+                            <Text style={style.videoProcess}>
+                                {`${convertSecondToTime(this.state.playPosition, this.state.videoFullTime)}/${convertSecondToTime(this.state.videoFullTime, this.state.videoFullTime)}`}
+                            </Text>
+                            <TouchableOpacity onPress={this.switchScreenState}>
+                                <Icon name={this.state.isFullScreen ? 'minimize' : 'maximize'} style={style.videoFullScreen} />
+                            </TouchableOpacity>
+                        </LinearGradient>
                     </View>
                 }
                 <View
