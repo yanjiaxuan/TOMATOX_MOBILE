@@ -39,9 +39,9 @@ const style = StyleSheet.create({
     wrapper: {
         flex: 1,
         backgroundColor: TOMATOX_THEME.BACKGROUND_COLOR,
-        padding: 10,
     },
     searchWrapper: {
+        margin: 10,
         flexDirection: 'row',
         alignItems: 'center',
         flexWrap: 'nowrap',
