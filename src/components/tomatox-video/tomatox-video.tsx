@@ -23,7 +23,7 @@ export default class TomatoxVideo extends React.Component<{
     private videoInstance: Video|undefined
     private seeking = false
     private curTimeCache = 0
-    private defaultVideoHeight = 250
+    private defaultVideoHeight = constants.WINDOW_WIDTH / 16 * 9
     private fullScreenVideoHeight = constants.WINDOW_WIDTH as number
     private touchStartTime = 0
     private videoControlHideTaskId: any
