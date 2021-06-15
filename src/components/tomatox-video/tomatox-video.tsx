@@ -28,6 +28,7 @@ export default class TomatoxVideo extends React.Component<{
     private touchStartTime = 0
     private videoControlHideTaskId: any
     private touchScreenTaskId: any
+    private longPressTaskId: any
     private initPosX: any
     private initPosY: any
     private posX: any
@@ -43,6 +44,7 @@ export default class TomatoxVideo extends React.Component<{
             playing: true,
             playPosition: 0,
             videoFullTime: 0,
+            playRate: 1,
             volume: 1,
             isFullScreen: false,
             showVideoControl: false,
@@ -128,6 +130,7 @@ export default class TomatoxVideo extends React.Component<{
                 const xOffsetAbs = Math.abs(pageX - this.initPosX)
                 const yOffsetAbs = Math.abs(pageY - this.initPosY)
                 if (xOffsetAbs > 5 || yOffsetAbs > 5) {
+                    clearTimeout(this.longPressTaskId)
                     if (xOffsetAbs * 2 > yOffsetAbs) {
                         // 横向，播放进度
                         this.touchType = 1;
@@ -180,6 +183,8 @@ export default class TomatoxVideo extends React.Component<{
                             });
                         }
                         break;
+                    case 4:
+                        break;
                     default:
                         break;
                 }
@@ -194,10 +199,21 @@ export default class TomatoxVideo extends React.Component<{
             // control组件下偏移量45
             this.posY = this.initPosY = locationY + 45;
             this.touchStartTime = Date.now();
+            this.longPressTaskId = this.setLifecycleTimeout(() => {
+                if (this.touchType === -1) {
+                    this.touchType = 4
+                    this.setState({ showVideoControl: false, noticeInfo: '倍速播放中', playRate: 3 })
+                    this.videoControlHideTaskId && clearTimeout(this.videoControlHideTaskId);
+                    this.videoControlHideTaskId = undefined
+                    this.longPressTaskId = undefined
+                }
+            }, 1000)
         },
         onTouchEnd: () => {
             this.posX = this.initPosX = this.posY = this.initPosY = undefined;
             this.setState({noticeInfo: ''});
+            this.longPressTaskId && clearTimeout(this.longPressTaskId)
+            this.longPressTaskId = undefined
             switch (this.touchType) {
                 case 1:
                     this.videoInstance?.seek(this.state.playPosition);
@@ -206,6 +222,10 @@ export default class TomatoxVideo extends React.Component<{
                 case 2:
                     break;
                 case 3:
+                    break;
+                case 4:
+                    //长按
+                    this.setState({ playRate: 1 })
                     break;
                 default:
                     // 点击
@@ -426,6 +446,7 @@ export default class TomatoxVideo extends React.Component<{
                     onProgress={data => !this.seeking && this.setState({playPosition: data.currentTime})} // update cur play time
                     onEnd={() => this.props.playNext(this.handlePlayEnd)}    // auto play next
                     onTouchEnd={() => {this.touchScreenTaskId = 9999; this.switchControl();}}
+                    rate={this.state.playRate}
                     paused={!this.state.playing}
                     repeat={false}
                     volume={this.state.volume}
