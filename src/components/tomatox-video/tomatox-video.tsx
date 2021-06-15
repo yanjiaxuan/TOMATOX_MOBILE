@@ -73,25 +73,23 @@ export default class TomatoxVideo extends React.Component<{
 
     private switchControl = () => {
         if (this.state.showVideoControl) {
-            this.videoControlHideTaskId && clearTimeout(this.videoControlHideTaskId);
-            this.videoControlHideTaskId = undefined;
-            this.setState({
-                showVideoControl: false,
-            });
-            this.videoControlHideTaskId = undefined;
+            this.hideControlImmediate()
         } else {
-            this.setState({showVideoControl: true})
-            this.videoControlHideTaskId = this.setLifecycleTimeout(() => {
-                this.switchControl()
-            }, 5000);
+            this.showControlImmediate()
         }
     }
 
-    private resetControlShowTimmer = () => {
+    private hideControlImmediate() {
+        this.setState({showVideoControl: false})
+        this.videoControlHideTaskId && clearTimeout(this.videoControlHideTaskId);
+        this.videoControlHideTaskId = undefined
+    }
+
+    private showControlImmediate = () => {
         this.setState({showVideoControl: true})
         this.videoControlHideTaskId && clearTimeout(this.videoControlHideTaskId);
         this.videoControlHideTaskId = this.setLifecycleTimeout(() => {
-            this.switchControl();
+            this.hideControlImmediate()
         }, 5000);
     }
 
@@ -107,11 +105,12 @@ export default class TomatoxVideo extends React.Component<{
             videoHeight: this.state.isFullScreen ? this.defaultVideoHeight : this.fullScreenVideoHeight,
             isFullScreen: !this.state.isFullScreen,
         });
-        this.resetControlShowTimmer();
     }
 
     private processGoBack = () => {
         if (this.state.isFullScreen) {
+            // when swipe gesture to back, control view's touch end event will not be called
+            this.touchHandler.onTouchEnd()
             this.switchScreenState();
         } else {
             this.props.navigation.goBack();
@@ -121,7 +120,7 @@ export default class TomatoxVideo extends React.Component<{
 
     private touchHandler = {
         onTouchMove: (event: GestureResponderEvent) => {
-            this.resetControlShowTimmer();
+            this.showControlImmediate();
             const {pageX, pageY} = event.nativeEvent;
             const xOffset = pageX - this.posX
             const yOffset = pageY - this.posY
@@ -202,9 +201,8 @@ export default class TomatoxVideo extends React.Component<{
             this.longPressTaskId = this.setLifecycleTimeout(() => {
                 if (this.touchType === -1) {
                     this.touchType = 4
-                    this.setState({ showVideoControl: false, noticeInfo: '倍速播放中', playRate: 3 })
-                    this.videoControlHideTaskId && clearTimeout(this.videoControlHideTaskId);
-                    this.videoControlHideTaskId = undefined
+                    this.setState({ noticeInfo: '倍速播放中', playRate: 3 })
+                    this.hideControlImmediate()
                     this.longPressTaskId = undefined
                 }
             }, 1000)
@@ -229,6 +227,7 @@ export default class TomatoxVideo extends React.Component<{
                     break;
                 default:
                     // 点击
+                    this.showControlImmediate();
                     if (this.touchScreenTaskId) {
                         // 双击 播放/暂停
                         this.setState({
@@ -236,10 +235,8 @@ export default class TomatoxVideo extends React.Component<{
                         });
                         clearTimeout(this.touchScreenTaskId);
                         this.touchScreenTaskId = undefined;
-                        this.resetControlShowTimmer();
                     } else {
                         // 单击，切换控制层状态
-                        this.resetControlShowTimmer()
                         this.touchScreenTaskId = this.setLifecycleTimeout(() => {
                             this.curShowVideoControl === this.state.showVideoControl && this.switchControl();
                             this.touchScreenTaskId = undefined;
@@ -404,7 +401,7 @@ export default class TomatoxVideo extends React.Component<{
                         </LinearGradient>
                         <LinearGradient colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.7)']}
                                         style={style.videoControlBottom}>
-                            <TouchableOpacity onPress={() => {this.resetControlShowTimmer(); this.setState({ playing: !this.state.playing });}}>
+                            <TouchableOpacity onPress={() => {this.showControlImmediate(); this.setState({ playing: !this.state.playing });}}>
                                 <Icon name={this.state.playing ? 'pause' : 'play'} style={style.videoPlayPause}/>
                             </TouchableOpacity>
                             <Slider
@@ -417,7 +414,7 @@ export default class TomatoxVideo extends React.Component<{
                                 thumbTintColor={TOMATOX_THEME.THEME_COLOR}
                                 onTouchStart={() => this.seeking = true}
                                 onSlidingComplete={() => {this.videoInstance?.seek(this.curTimeCache); this.setLifecycleTimeout(() => this.seeking = false, 1000);}}
-                                onValueChange={value => {this.curTimeCache = value; this.setState({playPosition: value}); this.resetControlShowTimmer();}}
+                                onValueChange={value => {this.curTimeCache = value; this.setState({playPosition: value}); this.showControlImmediate();}}
                             />
                             <Text style={style.videoProcess}>
                                 {`${convertSecondToTime(this.state.playPosition, this.state.videoFullTime)}/${convertSecondToTime(this.state.videoFullTime, this.state.videoFullTime)}`}
