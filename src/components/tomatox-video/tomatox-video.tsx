@@ -120,7 +120,6 @@ export default class TomatoxVideo extends React.Component<{
 
     private touchHandler = {
         onTouchMove: (event: GestureResponderEvent) => {
-            this.showControlImmediate();
             const {pageX, pageY} = event.nativeEvent;
             const xOffset = pageX - this.posX
             const yOffset = pageY - this.posY
@@ -148,6 +147,7 @@ export default class TomatoxVideo extends React.Component<{
                 // 响应
                 switch (this.touchType) {
                     case 1:
+                        this.showControlImmediate();
                         this.seeking = true;
                         const playPos = xOffset > 0 ? Math.min(this.state.videoFullTime, this.state.playPosition + xOffset * 2) :
                             Math.max(0, this.state.playPosition + xOffset * 2);
@@ -157,6 +157,7 @@ export default class TomatoxVideo extends React.Component<{
                         });
                         break;
                     case 2:
+                        this.showControlImmediate();
                         if (yOffset > 0) {
                             screenBrightness = Math.max(0, screenBrightness - yOffset * 0.1);
                         } else {
@@ -168,6 +169,7 @@ export default class TomatoxVideo extends React.Component<{
                         SystemSetting.setBrightnessForce(screenBrightness);
                         break;
                     case 3:
+                        this.showControlImmediate();
                         if (yOffset > 0) {
                             // 音量-
                             this.setState({
