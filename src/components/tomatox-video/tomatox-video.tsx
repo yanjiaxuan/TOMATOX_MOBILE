@@ -1,5 +1,5 @@
 import React from 'react';
-import Video, {OnLoadData} from 'react-native-video';
+import Video, {OnLoadData} from 'react-native-video-new';
 import Orientation, {OrientationType} from 'react-native-orientation-locker';
 import {Animated, BackHandler, GestureResponderEvent, StatusBar, StyleSheet, Text, View} from 'react-native';
 import constants from '../../utils/constants';

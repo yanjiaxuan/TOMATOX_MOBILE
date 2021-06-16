@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import 'react-native-gesture-handler';
 import CustomContainer from './src/components/navigatior/custom-container';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import Orientation from 'react-native-orientation-locker';
 import {StatusBar} from 'react-native';
 import {TOMATOX_THEME} from './src/utils/theme';
@@ -22,7 +22,9 @@ const App = () => {
           <StatusBar
               backgroundColor={TOMATOX_THEME.BACKGROUND_COLOR}
           />
-          <CustomContainer />
+          <SafeAreaView style={{flex: 1}}>
+              <CustomContainer />
+          </SafeAreaView>
       </SafeAreaProvider> :
       <></>
 };

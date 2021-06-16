@@ -14,14 +14,32 @@ export function queryResources(
     keyWord?: string,
     lastUpdate?: number
 ): any {
-    return fetch(`${constants.DEFAULT_ORIGIN}?ac=videolist${curPage ? '&pg=' + curPage : ''}${type? '&t=' + type : ''}${keyWord? '&wd=' + keyWord: ''}${lastUpdate ? '&h=' + lastUpdate : ''}`).
-        then(res => res.json())
+    return new Promise(resolve => {
+        try {
+            fetch(`${constants.DEFAULT_ORIGIN}?ac=videolist${curPage ? '&pg=' + curPage : ''}${type? '&t=' + type : ''}${keyWord? '&wd=' + keyWord: ''}${lastUpdate ? '&h=' + lastUpdate : ''}`)
+                .then(res => res.json())
+                .then(res => resolve(res), () => {resolve([])})
+                .catch(() => resolve([]))
+        } catch (e) {
+            resolve([])
+        }
+    })
+
 }
 
 export function queryTypes() {
-    return fetch(constants.DEFAULT_ORIGIN)
-        .then(res => res.json())
-        .then(res => res.class.map((item: {type_id: string, type_name: string}) => {
-            return { id: item.type_id, name: item.type_name }
-        }));
+    return new Promise(resolve => {
+        try {
+            fetch(constants.DEFAULT_ORIGIN)
+                .then(res => res.json())
+                .then(res => {
+                    resolve(res.class.map((item: {type_id: string, type_name: string}) => {
+                        return {id: item.type_id, name: item.type_name}
+                    }))
+                }, () => {resolve([])})
+                .catch(() => resolve([]))
+        } catch (e) {
+            resolve([])
+        }
+    })
 }
