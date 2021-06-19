@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, TextInput} from 'react-native';
+import {View, Text, StyleSheet, TextInput, NativeSyntheticEvent, TextInputSubmitEditingEventData} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
 import TomatoxWaterfall from '../../components/tomatox-waterfall/tomatox-waterfall';
@@ -9,7 +9,7 @@ export default function search() {
     const navigation = useNavigation();
     const [keyword, setKeyword] = useState('');
 
-    const searchByKeyword = (event: any) => {
+    const searchByKeyword = (event: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
         setKeyword(event.nativeEvent.text);
     };
 

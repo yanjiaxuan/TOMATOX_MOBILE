@@ -6,7 +6,7 @@
 // wd：搜索like
 // at：输出格式，可选xml
 
-import constants from "./constants";
+import constants from './constants';
 
 export function queryResources(
     curPage: number,
@@ -16,14 +16,14 @@ export function queryResources(
 ): any {
     return new Promise(resolve => {
         try {
-            fetch(`${constants.DEFAULT_ORIGIN}?ac=videolist${curPage ? '&pg=' + curPage : ''}${type? '&t=' + type : ''}${keyWord? '&wd=' + keyWord: ''}${lastUpdate ? '&h=' + lastUpdate : ''}`)
+            fetch(`${constants.DEFAULT_ORIGIN}?ac=videolist${curPage ? '&pg=' + curPage : ''}${type ? '&t=' + type : ''}${keyWord ? '&wd=' + keyWord : ''}${lastUpdate ? '&h=' + lastUpdate : ''}`)
                 .then(res => res.json())
-                .then(res => resolve(res), () => {resolve([])})
-                .catch(() => resolve([]))
+                .then(res => resolve(res), () => {resolve([]);})
+                .catch(() => resolve([]));
         } catch (e) {
-            resolve([])
+            resolve([]);
         }
-    })
+    });
 
 }
 
@@ -34,9 +34,32 @@ export function queryTypes() {
                 .then(res => res.json())
                 .then(res => {
                     resolve(res.class.map((item: {type_id: string, type_name: string}) => {
-                        return {id: item.type_id, name: item.type_name}
-                    }))
-                }, () => {resolve([])})
+                        return {id: item.type_id, name: item.type_name};
+                    }));
+                }, () => {resolve([]);})
+                .catch(() => resolve([]));
+        } catch (e) {
+            resolve([]);
+        }
+    });
+}
+
+export function queryLive() {
+    return new Promise(resolve => {
+        try {
+            fetch(constants.IPTV_ORIGIN)
+                .then(res => res.json())
+                .then(res => {
+                    const keys = new Set<string>();
+                    const result: ILiveResource[] = [];
+                    (res as ILiveResource[]).forEach(item =>{
+                        if (!keys.has(item.sourceName)) {
+                            result.push(item)
+                            keys.add(item.sourceName)
+                        }
+                    })
+                    resolve(result)
+                }, () => resolve([]))
                 .catch(() => resolve([]))
         } catch (e) {
             resolve([])

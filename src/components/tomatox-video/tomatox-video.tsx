@@ -388,6 +388,9 @@ export default class TomatoxVideo extends React.Component<{
             },
         });
 
+        if (!this.props.src) {
+            return <View style={style.videoWrapper} />
+        }
         return (
             <View style={style.videoWrapper}>
                 {

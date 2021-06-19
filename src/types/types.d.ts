@@ -31,3 +31,8 @@ declare interface IPlayHistoryResource extends IPlayResource{
 declare interface IPlayCollectResource extends IPlayResource {
     collectDate: number
 }
+
+declare interface ILiveResource {
+    sourceName: string
+    src: string
+}
