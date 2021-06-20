@@ -1,7 +1,16 @@
 {
   "name": "tomatox_mobile",
+  "description": "A online video player for mobile",
   "version": "1.0.0",
-  "private": true,
+  "private": false,
+  "homepage": "https://github.com/yanjiaxuan/TOMATOX_MOBILE",
+  "repository": "git@github.com:yanjiaxuan/TOMATOX_MOBILE.git",
+  "author": {
+    "name": "jiaxuan.yan",
+    "email": "yanjiaxuan330544968@gmail.com"
+  },
+  "bugs": "https://github.com/yanjiaxuan/TOMATOX_MOBILE/issues",
+  "license": "MIT",
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
@@ -53,6 +62,18 @@
     "react-test-renderer": "17.0.1",
     "typescript": "^3.8.3"
   },
+  "keywords": [
+    "react",
+    "react native",
+    "video",
+    "video player",
+    "player",
+    "online video player",
+    "韩剧",
+    "美剧",
+    "日剧",
+    "VIP视频"
+  ],
   "resolutions": {
     "@types/react": "^17"
   },

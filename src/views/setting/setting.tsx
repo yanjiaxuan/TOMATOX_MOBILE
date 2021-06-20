@@ -1,17 +1,17 @@
 import React from 'react';
-import {Alert, Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Image, Linking, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {TOMATOX_THEME} from '../../utils/theme';
-import {version} from '../../../package.json';
+import {version, homepage, bugs} from '../../../package.json';
 import Icon from 'react-native-vector-icons/Feather';
 import {TouchableHighlight} from 'react-native-gesture-handler';
 
-function SettingItem(props: {name: string, value: string, onPress: () => any}) {
+function SettingItem(props: {name: string, value?: string, onPress: () => any}) {
     return (
         <TouchableHighlight onPress={props.onPress} underlayColor={TOMATOX_THEME.COMPONENT_LIGHT_BACKGROUND} style={style.settingContentWrapper}>
             <View style={style.settingContentItem}>
                 <Text style={style.settingContentText}>{props.name}</Text>
                 <Text style={style.settingContentTextC}>
-                    {props.value}{'  '}
+                    {props.value || ''}{'  '}
                     <Icon name={'chevron-right'} size={16} color={TOMATOX_THEME.UNIMPORTANT_FONT_COLOR}/>
                 </Text>
             </View>
@@ -31,8 +31,9 @@ export default function setting() {
                 <View style={style.settingContentItemEmpty} />
                 <SettingItem name={'数据源'} value={'默认'} onPress={() => {}} />
                 <SettingItem name={'检查更新'} value={version} onPress={() => {}} />
-                <SettingItem name={'查看项目'} value={'TOMATOX_MOBILE'} onPress={() => {}} />
-                <SettingItem name={'免责声明'} value={''} onPress={() => {}} />
+                <SettingItem name={'查看项目'} value={'TOMATOX_MOBILE'} onPress={() => Linking.openURL(homepage)} />
+                <SettingItem name={'功能反馈'} onPress={() => Linking.openURL(bugs)} />
+                <SettingItem name={'免责声明'} onPress={() => {}} />
             </ScrollView>
         </View>
     );
