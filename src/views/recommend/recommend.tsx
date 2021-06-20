@@ -11,6 +11,7 @@ import TomatoxWaterfall from '../../components/tomatox-waterfall/tomatox-waterfa
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import SplashScreen from 'react-native-splash-screen';
 import {TOMATOX_THEME} from '../../utils/theme';
+import Icon from 'react-native-vector-icons/Feather';
 
 let TabViewCache: any;
 const TopTab = createMaterialTopTabNavigator();
@@ -87,7 +88,7 @@ export default class Recommend extends React.Component<any, any>{
                         <View style={style.titleInput} onTouchEnd={() => this.props.navigation.navigate('Search')}>
                             <Text style={style.titleInputText}>电影、电视剧、综艺...</Text>
                         </View>
-                        <Text onPress={() => this.props.navigation.navigate('Search')} style={style.titleText}>搜索</Text>
+                        <Icon name={'youtube'} onPress={() => this.props.navigation.navigate('Live')} style={style.titleIcon} />
                     </View>
                 </View>
                 { this.createTabView() }
@@ -135,8 +136,9 @@ const style = StyleSheet.create({
     titleInputText: {
         color: TOMATOX_THEME.DISABLED_FONT_COLOR,
     },
-    titleText: {
-        color: TOMATOX_THEME.FONT_COLOR,
+    titleIcon: {
+        color: TOMATOX_THEME.UNIMPORTANT_FONT_COLOR,
+        fontSize: 20,
     },
     tabLabel: {
         color: TOMATOX_THEME.FONT_COLOR,

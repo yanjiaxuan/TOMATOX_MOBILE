@@ -28,7 +28,7 @@ export function queryResources(
 }
 
 export function queryTypes() {
-    return new Promise(resolve => {
+    return new Promise<{id: number, name: string}[]>(resolve => {
         try {
             fetch(constants.DEFAULT_ORIGIN)
                 .then(res => res.json())

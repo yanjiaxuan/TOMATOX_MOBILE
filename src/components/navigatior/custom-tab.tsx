@@ -33,10 +33,6 @@ export default function customTab() {
                 title: '推荐',
                 tabBarIcon: ({color}) => <Icon name={'fire'} size={16} color={color} />,
             }} />
-            <Tab.Screen name={'Live'} component={Live} options={{
-                title: '直播',
-                tabBarIcon: ({color}) => <Icon name={'play-circle'} size={16} color={color} />,
-            }} />
             <Tab.Screen name={'Collect'} component={Collect} options={{
                 title: '收藏',
                 tabBarIcon: ({color}) => <Icon name={'heart'} size={16} color={color} />,

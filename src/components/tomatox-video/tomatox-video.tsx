@@ -15,9 +15,10 @@ let screenBrightness = 1;
 
 export default class TomatoxVideo extends React.Component<{
     src: string,
+    paused?: boolean,
     lastSeek?: number,
     playNext: (cb: () => void) => void,
-    onBack: (playPosition: number) => any,
+    onBack?: (playPosition: number) => any,
     navigation: any
 }, any> {
     private videoInstance: Video|undefined
@@ -288,7 +289,7 @@ export default class TomatoxVideo extends React.Component<{
         this.selfIsAlive = false;
         BackHandler.removeEventListener('hardwareBackPress', this.processGoBack);
         Orientation.removeLockListener(this.orientationListener);
-        this.props.onBack(this.state.playPosition);
+        this.props.onBack && this.props.onBack(this.state.playPosition);
     }
 
 
@@ -447,7 +448,7 @@ export default class TomatoxVideo extends React.Component<{
                     onLoad={this.onVideoLoad} // when loaded, record fullTime
                     onProgress={data => !this.seeking && this.setState({playPosition: data.currentTime})} // update cur play time
                     onEnd={() => this.props.playNext(this.handlePlayEnd)}    // auto play next
-                    onTouchEnd={() => {this.touchScreenTaskId = 9999; this.switchControl();}}
+                    onTouchEnd={() => {this.touchScreenTaskId = 9999; this.switchControl(); setTimeout(() => {this.touchScreenTaskId = undefined}, 300)}}
                     rate={this.state.playRate}
                     paused={!this.state.playing}
                     repeat={false}
