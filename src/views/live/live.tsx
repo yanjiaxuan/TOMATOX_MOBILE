@@ -18,7 +18,6 @@ export default function live() {
     const [liveRes, setLiveRes] = useState<ILiveResource[]>([]);
     const [src, setSrc] = useState('');
     const [sourceLoaded, setSourceLoaded] = useState(false)
-    const [isFocus, setIsFocus] = useState(true)
     const navigation = useNavigation()
 
     useEffect(() => {
@@ -30,20 +29,13 @@ export default function live() {
         });
     }, []);
 
-    useFocusEffect(
-        useCallback(() => {
-            setIsFocus(true)
-            return () => setIsFocus(false)
-        }, [])
-    )
-
     const searchLiveRes = (e: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
         setLiveRes(liveResAll.current.filter(item => item.sourceName.toLowerCase().includes(e.nativeEvent.text.toLowerCase())))
     }
 
     return (
         <View style={style.fullWrapper}>
-            <TomatoxVideo src={isFocus ? src : ''} paused={!isFocus} playNext={() => {}} navigation={navigation} />
+            <TomatoxVideo src={src} playNext={() => {}} navigation={navigation} />
             <View style={style.contentWrapper}>
                 <TextInput
                     style={style.searchBar}
