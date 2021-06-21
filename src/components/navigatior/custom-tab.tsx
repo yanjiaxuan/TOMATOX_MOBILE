@@ -2,7 +2,6 @@ import React from 'react';
 import Recommend from '../../views/recommend/recommend';
 import History from '../../views/history/history';
 import Collect from '../../views/collect/collect';
-import Live from '../../views/live/live';
 import Setting from '../../views/setting/setting';
 import {StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -13,10 +12,16 @@ const Tab = createBottomTabNavigator();
 
 const style = StyleSheet.create({
     tabBar: {
-        paddingBottom: 4,
-        borderTopWidth: 0,
-        backgroundColor: TOMATOX_THEME.HIGHLIGTH_BACKGROUND_COLOR,
+        paddingTop: 7,
+        paddingBottom: 8,
+        height: 55,
+        borderTopWidth: 1,
+        borderTopColor: TOMATOX_THEME.SPLIT_LINE_COLOR,
+        backgroundColor: TOMATOX_THEME.BACKGROUND_COLOR,
     },
+    tabBarLabel: {
+        fontSize: 10
+    }
 });
 
 export default function customTab() {
@@ -25,6 +30,7 @@ export default function customTab() {
             backBehavior={'none'}
             tabBarOptions={{
                 style: style.tabBar,
+                labelStyle: style.tabBarLabel,
                 activeTintColor: TOMATOX_THEME.THEME_COLOR,
                 inactiveTintColor: TOMATOX_THEME.UNIMPORTANT_FONT_COLOR,
             }}

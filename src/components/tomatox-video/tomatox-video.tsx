@@ -121,6 +121,7 @@ export default class TomatoxVideo extends React.Component<{
 
     private touchHandler = {
         onTouchMove: (event: GestureResponderEvent) => {
+            if (event.nativeEvent.touches.length > 1) {return;}
             const {pageX, pageY} = event.nativeEvent;
             const xOffset = pageX - this.posX
             const yOffset = pageY - this.posY
@@ -195,6 +196,7 @@ export default class TomatoxVideo extends React.Component<{
             this.posY = pageY;
         },
         onTouchStart: (event: GestureResponderEvent) => {
+            if (event.nativeEvent.touches.length > 1) {return;}
             this.curShowVideoControl = this.state.showVideoControl;
             const {locationX, locationY} = event.nativeEvent;
             this.posX = this.initPosX = locationX;
@@ -210,7 +212,8 @@ export default class TomatoxVideo extends React.Component<{
                 }
             }, 1000)
         },
-        onTouchEnd: () => {
+        onTouchEnd: (event?: GestureResponderEvent) => {
+            if (event && event.nativeEvent.touches.length > 1) {return;}
             this.posX = this.initPosX = this.posY = this.initPosY = undefined;
             this.setState({noticeInfo: ''});
             this.longPressTaskId && clearTimeout(this.longPressTaskId)

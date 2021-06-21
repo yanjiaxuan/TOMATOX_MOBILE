@@ -3,7 +3,6 @@ import {
     Image,
     SectionList,
     SectionListData,
-    StatusBar,
     StyleSheet,
     Text,
     View,
@@ -21,7 +20,6 @@ export default function () {
     const [resourceSections, setResourceSections] = useState<SectionListData<IPlayHistoryResource, any>[]>([]);
     const {navigate} = useNavigation();
     const queryResource = useCallback(() => {
-        StatusBar.setBackgroundColor(TOMATOX_THEME.HIGHLIGTH_BACKGROUND_COLOR);
         const historyResources = queryAll(TABLE_NAME.TOMATOX_HISTORY) as IPlayHistoryResource[];
         historyResources.sort((a, b) => b.historyPlayDate - a.historyPlayDate);
         const now = Date.now();
@@ -32,8 +30,6 @@ export default function () {
             {title: '昨天', data: historyResources.filter(item => item.historyPlayDate >= yesterday && item.historyPlayDate < today)},
             {title: '更早', data: historyResources.filter(item => item.historyPlayDate < yesterday)},
         ]);
-
-        return () => StatusBar.setBackgroundColor(TOMATOX_THEME.BACKGROUND_COLOR);
     }, []);
     useFocusEffect(queryResource);
 
@@ -87,7 +83,8 @@ const style = StyleSheet.create({
         height: 50,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: TOMATOX_THEME.HIGHLIGTH_BACKGROUND_COLOR,
+        borderBottomWidth: 1,
+        borderColor: TOMATOX_THEME.SPLIT_LINE_COLOR
     },
     headerText: {
         color: TOMATOX_THEME.FONT_COLOR,
