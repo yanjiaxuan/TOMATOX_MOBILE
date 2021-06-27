@@ -20,7 +20,7 @@ target 'TOMATOX_MOBILE' do
 
   pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
 
-  pod 'react-native-video-new', :path => '../node_modules/react-native-video-new'
+#  pod 'react-native-video-new', :path => '../node_modules/react-native-video-new'
 
   target 'TOMATOX_MOBILETests' do
     inherit! :complete

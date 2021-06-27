@@ -21,10 +21,11 @@ const App = () => {
       <View style={{ flex:1, backgroundColor: TOMATOX_THEME.BACKGROUND_COLOR }}>
           <StatusBar
               backgroundColor={TOMATOX_THEME.BACKGROUND_COLOR}
+              barStyle={'light-content'}
           />
-          <SafeAreaView style={{flex: 1}}>
+          <View style={{flex: 1}}>
               <CustomContainer />
-          </SafeAreaView>
+          </View>
       </View> :
       <></>
 };

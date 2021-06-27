@@ -56,12 +56,14 @@ const style = StyleSheet.create({
     settingTitleName: {
         color: TOMATOX_THEME.FONT_COLOR,
         fontSize: 20,
-        marginTop: 25,
-        marginBottom: 4,
+        marginTop: 30,
+        marginBottom: 5,
+        fontWeight: '600',
     },
     settingTitleVersion: {
         color: TOMATOX_THEME.FONT_COLOR,
         fontSize: 14,
+        fontWeight: '500',
     },
     settingContent: {
     },

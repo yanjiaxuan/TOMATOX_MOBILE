@@ -4,6 +4,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
 import TomatoxWaterfall from '../../components/tomatox-waterfall/tomatox-waterfall';
 import {TOMATOX_THEME} from '../../utils/theme';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 export default function search() {
     const navigation = useNavigation();
@@ -14,24 +15,26 @@ export default function search() {
     };
 
     return (
-        <View style={style.wrapper}>
-            <View style={style.searchWrapper}>
-                <TextInput
-                    style={style.searchInput}
-                    placeholder={'电影、电视剧、综艺...'}
-                    placeholderTextColor={TOMATOX_THEME.UNIMPORTANT_FONT_COLOR}
-                    autoFocus={true}
-                    onSubmitEditing={searchByKeyword}
-                    returnKeyType={'search'}
-                />
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Text style={style.searchText}>取消</Text>
-                </TouchableOpacity>
+        <SafeAreaView style={{flex: 1, backgroundColor: TOMATOX_THEME.BACKGROUND_COLOR}}>
+            <View style={style.wrapper}>
+                <View style={style.searchWrapper}>
+                    <TextInput
+                        style={style.searchInput}
+                        placeholder={'电影、电视剧、综艺...'}
+                        placeholderTextColor={TOMATOX_THEME.UNIMPORTANT_FONT_COLOR}
+                        autoFocus={true}
+                        onSubmitEditing={searchByKeyword}
+                        returnKeyType={'search'}
+                    />
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                        <Text style={style.searchText}>取消</Text>
+                    </TouchableOpacity>
+                </View>
+                <View style={style.contentWrapper}>
+                    <TomatoxWaterfall keyword={keyword}/>
+                </View>
             </View>
-            <View style={style.contentWrapper}>
-                <TomatoxWaterfall keyword={keyword}/>
-            </View>
-        </View>
+        </SafeAreaView>
     );
 }
 
@@ -52,7 +55,6 @@ const style = StyleSheet.create({
         color: TOMATOX_THEME.FONT_COLOR,
         backgroundColor: TOMATOX_THEME.COMPONENT_DARK_BACKGROUND,
         height: 35,
-        lineHeight: 35,
         paddingTop: 0,
         paddingBottom: 0,
         paddingLeft: 20,

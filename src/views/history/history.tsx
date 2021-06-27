@@ -103,6 +103,7 @@ const style = StyleSheet.create({
     contentTitle: {
         lineHeight: 30,
         fontSize: 14,
+        color: TOMATOX_THEME.FONT_COLOR
     },
     historyItem: {
         height: 75,

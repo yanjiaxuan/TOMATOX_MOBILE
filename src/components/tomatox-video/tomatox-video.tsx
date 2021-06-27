@@ -10,6 +10,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Feather';
 import Slider from '@react-native-community/slider';
+import { Platform } from 'react-native';
 
 let screenBrightness = 1;
 
@@ -201,7 +202,8 @@ export default class TomatoxVideo extends React.Component<{
             const {locationX, locationY} = event.nativeEvent;
             this.posX = this.initPosX = locationX;
             // control组件下偏移量45
-            this.posY = this.initPosY = locationY + 45;
+            const offset = Platform.OS === 'ios' ? 0 : 45;
+            this.posY = this.initPosY = locationY + offset;
             this.touchStartTime = Date.now();
             this.longPressTaskId = this.setLifecycleTimeout(() => {
                 if (this.touchType === -1) {
@@ -302,6 +304,7 @@ export default class TomatoxVideo extends React.Component<{
                 width: '100%',
                 height: this.state.videoHeight,
                 backgroundColor: '#000',
+                marginTop: constants.IS_IOS && !this.state.isFullScreen ? 44 : 0
             },
             video: {
                 width: '100%',
@@ -314,9 +317,10 @@ export default class TomatoxVideo extends React.Component<{
                 zIndex: 1,
             },
             videoControlTop: {
-                paddingLeft: 5,
-                paddingRight: 15,
-                height: 45,
+                paddingLeft: constants.IS_IOS && this.state.isFullScreen ? 40 : 5,
+                paddingRight: constants.IS_IOS && this.state.isFullScreen ? 50 : 15,
+                paddingTop: constants.IS_IOS && this.state.isFullScreen ? 5 : 0,
+                height: constants.IS_IOS && this.state.isFullScreen ? 65 : 45,
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 flexDirection: 'row',
@@ -363,14 +367,14 @@ export default class TomatoxVideo extends React.Component<{
                 zIndex: 10,
             },
             videoControlBottom: {
-                top: this.state.videoHeight - 90,
-                height: 45,
+                top: this.state.videoHeight - (constants.IS_IOS && this.state.isFullScreen ? 130 : 90),
+                height: constants.IS_IOS && this.state.isFullScreen ? 65 : 45,
                 width: '100%',
                 flexDirection: 'row',
                 flexWrap: 'nowrap',
                 alignItems: 'center',
-                paddingLeft: 10,
-                paddingRight: 15,
+                paddingLeft: constants.IS_IOS && this.state.isFullScreen ? 45 : 10,
+                paddingRight: constants.IS_IOS && this.state.isFullScreen ? 50 : 15,
             },
             videoPlayPause: {
                 color: TOMATOX_THEME.FONT_COLOR,
@@ -421,6 +425,7 @@ export default class TomatoxVideo extends React.Component<{
                                 minimumTrackTintColor={TOMATOX_THEME.THEME_COLOR}
                                 maximumTrackTintColor={TOMATOX_THEME.UNIMPORTANT_FONT_COLOR}
                                 thumbTintColor={TOMATOX_THEME.THEME_COLOR}
+                                thumbImage={require('../../images/png/tomatox.png')}
                                 onTouchStart={() => this.seeking = true}
                                 onSlidingComplete={() => {this.videoInstance?.seek(this.curTimeCache); this.setLifecycleTimeout(() => this.seeking = false, 1000);}}
                                 onValueChange={value => {this.curTimeCache = value; this.setState({playPosition: value}); this.showControlImmediate();}}
@@ -459,7 +464,7 @@ export default class TomatoxVideo extends React.Component<{
                     source={{uri: this.props.src}}
                     style={style.video}
                     resizeMode={'contain'}
-                    fullscreen={this.state.isFullScreen}
+                    //fullscreen={this.state.isFullScreen}
                     onError={e => console.log(e)}
                     // onLoadStart={() => setProcessCenterInfo('加载中，请稍候...')}
                     onBuffer={({isBuffering}) => this.setState({bufferingInfo: isBuffering ? '正在缓冲...' : ''})}
