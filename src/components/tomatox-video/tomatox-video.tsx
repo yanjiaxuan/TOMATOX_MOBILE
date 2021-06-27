@@ -425,7 +425,6 @@ export default class TomatoxVideo extends React.Component<{
                                 minimumTrackTintColor={TOMATOX_THEME.THEME_COLOR}
                                 maximumTrackTintColor={TOMATOX_THEME.UNIMPORTANT_FONT_COLOR}
                                 thumbTintColor={TOMATOX_THEME.THEME_COLOR}
-                                thumbImage={require('../../images/png/tomatox.png')}
                                 onTouchStart={() => this.seeking = true}
                                 onSlidingComplete={() => {this.videoInstance?.seek(this.curTimeCache); this.setLifecycleTimeout(() => this.seeking = false, 1000);}}
                                 onValueChange={value => {this.curTimeCache = value; this.setState({playPosition: value}); this.showControlImmediate();}}
