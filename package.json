@@ -43,6 +43,7 @@
     "react-native-tab-view": "^3.0.1",
     "react-native-vector-icons": "^8.1.0",
     "react-native-video-new": "^1.1.0",
+    "react-native-xml2js": "^1.0.3",
     "realm": "^10.4.2"
   },
   "devDependencies": {

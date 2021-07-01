@@ -7,6 +7,8 @@
 // at：输出格式，可选xml
 
 import constants from './constants';
+import {filterResources} from "./filterResources";
+const parseXML = require('react-native-xml2js').parseString
 
 export function queryResources(
     curPage: number,
@@ -17,8 +19,21 @@ export function queryResources(
     return new Promise(resolve => {
         try {
             fetch(`${constants.DEFAULT_ORIGIN}?ac=videolist${curPage ? '&pg=' + curPage : ''}${type ? '&t=' + type : ''}${keyWord ? '&wd=' + keyWord : ''}${lastUpdate ? '&h=' + lastUpdate : ''}`)
-                .then(res => res.json())
-                .then(res => resolve(res), () => {resolve([]);})
+                .then(res => res.text())
+                .then(res => {
+                    parseXML(res, (err: Error, data:any) => {
+                        const jsonData = data.rss || data
+                        if (jsonData.list && jsonData.list[0] && jsonData.list[0].video) {
+                            const { pagecount } = jsonData.list[0].$
+                            const videoList =
+                                jsonData.list[0].video instanceof Array
+                                    ? jsonData.list[0].video
+                                    : [jsonData.list[0].video]
+                            resolve({ pagecount, list: filterResources(videoList) })
+                        }
+                    })
+                    resolve([])
+                }, () => {resolve([]);})
                 .catch(() => resolve([]));
         } catch (e) {
             resolve([]);
@@ -31,11 +46,16 @@ export function queryTypes() {
     return new Promise<{id: number, name: string}[]>(resolve => {
         try {
             fetch(constants.DEFAULT_ORIGIN)
-                .then(res => res.json())
+                .then(res => res.text())
                 .then(res => {
-                    resolve(res.class.map((item: {type_id: string, type_name: string}) => {
-                        return {id: item.type_id, name: item.type_name};
-                    }));
+                    parseXML(res, (err: Error, data: any) => {
+                        const jsonData = data.rss || data
+                        const result: any = []
+                        jsonData.class[0].ty.forEach((item: any) => {
+                            result.push({id: item.$.id, name: item._})
+                        })
+                        resolve(result)
+                    })
                 }, () => {resolve([]);})
                 .catch(() => resolve([]));
         } catch (e) {

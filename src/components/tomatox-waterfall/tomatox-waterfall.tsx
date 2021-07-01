@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import TomatoxFlatList from '../../components/tomatox-flat-list/tomatox-flat-list';
 import {queryResources} from '../../utils/request';
-import {filterResources} from '../../utils/filterResources';
 
 export default function tomatoxWaterfall(props: {type?: number, keyword?: string}) {
     const [resourceList, setResourceList] = useState<IPlayResource[]>([]);
@@ -59,8 +58,8 @@ export default function tomatoxWaterfall(props: {type?: number, keyword?: string
             }
             pageCountRef.current = pagecount
             setResourceList(init ?
-                [...filterResources(list)] :
-                [...resourceList, ...filterResources(list)]
+                [...list] :
+                [...resourceList, ...list]
             );
         });
     };

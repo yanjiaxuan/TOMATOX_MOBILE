@@ -3,25 +3,35 @@ export function filterResources(resources: any[]) {
 }
 
 export function filterResource(resource: any): IPlayResource {
+    let listStr = ''
+    if (resource.dl && resource.dl[0] && resource.dl[0].dd && resource.dl[0].dd[0]) {
+        const dd = resource.dl[0].dd[0]
+        if (dd instanceof Array) {
+            const videoList = dd.filter(item => item.$.flag && item.$.flag.includes('m3u8'))
+            videoList.length && (listStr = videoList[0]._)
+        } else {
+            listStr = dd._
+        }
+    }
     return {
-        id: resource.vod_id,
-        type: resource.type_name,
-        picture: resource.vod_pic,
-        lang: resource.vod_lang,
-        name: resource.vod_name,
-        director: resource.vod_director,
-        describe: resource.vod_blurb,
-        area: resource.vod_area,
-        actor: resource.vod_actor,
-        class: resource.vod_class,
-        doubanId: resource.vod_douban_id,
-        doubanScore: resource.vod_douban_score,
-        origin: resource.vod_play_from,
-        remark: resource.vod_remarks,
-        tag: resource.vod_tag,
-        year: resource.vod_year,
-        updateTime: resource.vod_time,
-        playList: filterPlayList(resource.vod_play_url),
+        id: +resource.id[0],
+        type: resource.type[0],
+        picture: resource.pic[0],
+        lang: resource.lang[0],
+        name: resource.name[0],
+        director: resource.director[0],
+        describe: resource.des[0],
+        area: resource.area[0],
+        actor: resource.actor[0],
+        class: '',
+        doubanId: 0,
+        doubanScore: '0.0',
+        origin: '',
+        remark: resource.note[0],
+        tag: '',
+        year: resource.year[0],
+        updateTime: resource.last[0],
+        playList: filterPlayList(listStr),
     };
 }
 
