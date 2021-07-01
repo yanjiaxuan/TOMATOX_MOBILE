@@ -31,12 +31,13 @@ export function queryResources(
                                     : [jsonData.list[0].video]
                             resolve({ pagecount, list: filterResources(videoList) })
                         }
+                        resolve({pagecount: 0, list: []})
                     })
-                    resolve([])
-                }, () => {resolve([]);})
-                .catch(() => resolve([]));
+                    resolve({pagecount: 0, list: []})
+                }, () => {resolve({pagecount: 0, list: []});})
+                .catch(() => resolve({pagecount: 0, list: []}));
         } catch (e) {
-            resolve([]);
+            resolve({pagecount: 0, list: []});
         }
     });
 
