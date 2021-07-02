@@ -6,7 +6,7 @@ import TomatoxWaterfall from '../../components/tomatox-waterfall/tomatox-waterfa
 import {TOMATOX_THEME} from '../../utils/theme';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
-export default function search() {
+export default function Search() {
     const navigation = useNavigation();
     const [keyword, setKeyword] = useState('');
 

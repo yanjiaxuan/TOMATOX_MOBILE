@@ -13,7 +13,7 @@ import {queryLive} from '../../utils/request';
 import TomatoxVideo from '../../components/tomatox-video/tomatox-video';
 import {useFocusEffect, useNavigation} from '@react-navigation/native'
 
-export default function live() {
+export default function Live() {
     const liveResAll = useRef<ILiveResource[]>([])
     const [liveRes, setLiveRes] = useState<ILiveResource[]>([]);
     const [src, setSrc] = useState('');

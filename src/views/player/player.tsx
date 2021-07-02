@@ -18,7 +18,7 @@ const style = StyleSheet.create({
     },
 });
 
-export default function () {
+export default function Player() {
     const navigation = useNavigation();
     const {params} = useRoute();
     const [resource, setResource] = useState<IPlayResource|IPlayHistoryResource|IPlayCollectResource>(params as any);

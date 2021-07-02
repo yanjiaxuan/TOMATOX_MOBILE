@@ -37,3 +37,10 @@ declare interface ILiveResource {
     sourceName: string
     src: string
 }
+
+declare interface IOrigin {
+    id: string,
+    url: string,
+    timestamp: number,
+    active: boolean
+}

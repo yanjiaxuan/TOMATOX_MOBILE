@@ -14,9 +14,10 @@ import {TABLE_NAME} from '../../utils/storage/table-define';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
 import {convertTimestampToDate} from '../../utils/time-converter';
+import TomatoxHeader from '../../components/tomatox-header/tomatox-header';
 
 const ONE_DAY = 24 * 3600 * 1000;
-export default function () {
+export default function History() {
     const [resourceSections, setResourceSections] = useState<SectionListData<IPlayHistoryResource, any>[]>([]);
     const {navigate} = useNavigation();
     const queryResource = useCallback(() => {
@@ -35,9 +36,7 @@ export default function () {
 
     return (
         <View style={style.fullWrapper}>
-            <View style={style.header}>
-                <Text style={style.headerText}>历史记录</Text>
-            </View>
+            <TomatoxHeader title={'历史记录'} />
             <SectionList
                 style={style.content}
                 showsVerticalScrollIndicator={false}
@@ -79,18 +78,6 @@ const style = StyleSheet.create({
         flex: 1,
         backgroundColor: TOMATOX_THEME.BACKGROUND_COLOR,
     },
-    header: {
-        height: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderBottomWidth: 1,
-        borderColor: TOMATOX_THEME.SPLIT_LINE_COLOR
-    },
-    headerText: {
-        color: TOMATOX_THEME.FONT_COLOR,
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
     content: {
         flex: 1,
         paddingLeft: 10,
@@ -98,12 +85,12 @@ const style = StyleSheet.create({
     },
     contentTitleWrapper: {
         height: 30,
-        backgroundColor: TOMATOX_THEME.BACKGROUND_COLOR
+        backgroundColor: TOMATOX_THEME.BACKGROUND_COLOR,
     },
     contentTitle: {
         lineHeight: 30,
         fontSize: 14,
-        color: TOMATOX_THEME.FONT_COLOR
+        color: TOMATOX_THEME.FONT_COLOR,
     },
     historyItem: {
         height: 75,

@@ -21,7 +21,8 @@ const abstractTableDefine = {
 
 export const TABLE_NAME = {
     TOMATOX_HISTORY: 'TOMATOX_HISTORY',
-    TOMATOX_COLLECT: 'TOMATOX_COLLECT'
+    TOMATOX_COLLECT: 'TOMATOX_COLLECT',
+    TOMATOX_ORIGINS: 'TOMATOX_ORIGINS'
 }
 
 export const TABLE_DEFINE = {
@@ -42,6 +43,16 @@ export const TABLE_DEFINE = {
         properties: {
             ...abstractTableDefine,
             collectDate: 'int'
+        }
+    },
+    TOMATOX_ORIGINS: {
+        name: TABLE_NAME.TOMATOX_ORIGINS,
+        primaryKey: 'id',
+        properties: {
+            id: 'string',
+            url: 'string',
+            timestamp: 'int',
+            active: 'bool'
         }
     }
 }

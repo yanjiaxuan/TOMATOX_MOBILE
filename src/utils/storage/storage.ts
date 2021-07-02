@@ -3,12 +3,13 @@ import {TABLE_DEFINE, TABLE_NAME} from './table-define';
 import {convertDataFromDB, convertDataToDB} from "./data-converter";
 
 const ONE_WEEK = 7 * 24 * 3600 * 1000
-let realm: Realm | undefined;
+export let realm: Realm | undefined;
+
 export default async function initStorage() {
     realm = await Realm.open({
         path: 'tomatox',
         schemaVersion: 1,
-        schema: [TABLE_DEFINE.TOMATOX_COLLECT, TABLE_DEFINE.TOMATOX_HISTORY],
+        schema: [TABLE_DEFINE.TOMATOX_COLLECT, TABLE_DEFINE.TOMATOX_HISTORY, TABLE_DEFINE.TOMATOX_ORIGINS],
     });
     cleanOutdateData()
 }

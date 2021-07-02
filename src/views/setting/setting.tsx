@@ -4,6 +4,7 @@ import {TOMATOX_THEME} from '../../utils/theme';
 import {version, homepage, bugs} from '../../../package.json';
 import Icon from 'react-native-vector-icons/Feather';
 import {TouchableHighlight} from 'react-native-gesture-handler';
+import {useNavigation} from '@react-navigation/native'
 
 function SettingItem(props: {name: string, value?: string, onPress: () => any}) {
     return (
@@ -19,7 +20,8 @@ function SettingItem(props: {name: string, value?: string, onPress: () => any}) 
     );
 }
 
-export default function setting() {
+export default function Setting() {
+    const {navigate} = useNavigation()
     return (
         <View style={style.fullWrapper}>
             <View style={style.settingTitle}>
@@ -29,7 +31,7 @@ export default function setting() {
             </View>
             <ScrollView style={style.settingContent}>
                 <View style={style.settingContentItemEmpty} />
-                <SettingItem name={'数据源'} value={'默认'} onPress={() => {}} />
+                <SettingItem name={'数据源'} value={'默认'} onPress={() => {navigate('Origins')}} />
                 <SettingItem name={'检查更新'} value={version} onPress={() => {}} />
                 <SettingItem name={'查看项目'} value={'TOMATOX_MOBILE'} onPress={() => Linking.openURL(homepage)} />
                 <SettingItem name={'功能反馈'} onPress={() => Linking.openURL(bugs)} />

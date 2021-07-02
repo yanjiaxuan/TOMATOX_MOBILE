@@ -144,6 +144,8 @@ export default class TomatoxVideo extends React.Component<{
                             this.touchType = 3;   // 音量
                         }
                     }
+                    this.posX = pageX;
+                    this.posY = pageY;
                 }
                 return
             } else {
@@ -152,8 +154,8 @@ export default class TomatoxVideo extends React.Component<{
                     case 1:
                         this.showControlImmediate();
                         this.seeking = true;
-                        const playPos = xOffset > 0 ? Math.min(this.state.videoFullTime, this.state.playPosition + xOffset * 2) :
-                            Math.max(0, this.state.playPosition + xOffset * 2);
+                        const playPos = xOffset > 0 ? Math.min(this.state.videoFullTime, this.state.playPosition + xOffset) :
+                            Math.max(0, this.state.playPosition + xOffset);
                         this.setState({
                             playPosition: playPos,
                             noticeInfo: `${convertSecondToTime(playPos, this.state.videoFullTime)} / ${convertSecondToTime(this.state.videoFullTime, this.state.videoFullTime)}`,
