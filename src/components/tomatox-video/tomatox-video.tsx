@@ -204,7 +204,7 @@ export default class TomatoxVideo extends React.Component<{
             const {locationX, locationY} = event.nativeEvent;
             this.posX = this.initPosX = locationX;
             // control组件下偏移量45
-            const offset = Platform.OS === 'ios' ? 0 : 45;
+            const offset = this.state.isFullScreen ? 65 : 45;
             this.posY = this.initPosY = locationY + offset;
             this.touchStartTime = Date.now();
             this.longPressTaskId = this.setLifecycleTimeout(() => {
@@ -319,27 +319,27 @@ export default class TomatoxVideo extends React.Component<{
                 zIndex: 1,
             },
             videoControlTop: {
-                paddingLeft: constants.IS_IOS && this.state.isFullScreen ? 40 : 5,
-                paddingRight: constants.IS_IOS && this.state.isFullScreen ? 50 : 15,
-                paddingTop: constants.IS_IOS && this.state.isFullScreen ? 5 : 0,
-                height: constants.IS_IOS && this.state.isFullScreen ? 65 : 45,
+                paddingLeft: this.state.isFullScreen ? (constants.IS_IOS ? 40 : 15) : 5,
+                paddingRight: this.state.isFullScreen ? (constants.IS_IOS ? 50 : 25) : 15,
+                paddingTop: this.state.isFullScreen ? 5 : 0,
+                height: this.state.isFullScreen ? 65 : 45,
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 flexDirection: 'row',
             },
             topBtn: {
                 color: TOMATOX_THEME.FONT_COLOR,
-                fontSize: 27,
+                fontSize: this.state.isFullScreen ? 30 : 27,
             },
             topBtnRight: {
                 color: TOMATOX_THEME.FONT_COLOR,
-                fontSize: 20,
+                fontSize: this.state.isFullScreen ? 23 : 20,
             },
             videoControlCenter: {
                 width: '100%',
-                height: this.state.videoHeight - 90,
+                height: this.state.videoHeight - (this.state.isFullScreen ? 130 : 90),
                 zIndex: 10,
-                top: 45,
+                top: this.state.isFullScreen ? 65 : 45,
                 position: 'absolute',
                 justifyContent: 'center',
                 alignItems: 'center',
@@ -369,18 +369,18 @@ export default class TomatoxVideo extends React.Component<{
                 zIndex: 10,
             },
             videoControlBottom: {
-                top: this.state.videoHeight - (constants.IS_IOS && this.state.isFullScreen ? 130 : 90),
-                height: constants.IS_IOS && this.state.isFullScreen ? 65 : 45,
+                top: this.state.videoHeight - (this.state.isFullScreen ? 130 : 90),
+                height: this.state.isFullScreen ? 65 : 45,
                 width: '100%',
                 flexDirection: 'row',
                 flexWrap: 'nowrap',
                 alignItems: 'center',
-                paddingLeft: constants.IS_IOS && this.state.isFullScreen ? 45 : 10,
-                paddingRight: constants.IS_IOS && this.state.isFullScreen ? 50 : 15,
+                paddingLeft: this.state.isFullScreen ? (constants.IS_IOS ? 45 : 20) : 10,
+                paddingRight: this.state.isFullScreen ? (constants.IS_IOS ? 50 : 25) : 15,
             },
             videoPlayPause: {
                 color: TOMATOX_THEME.FONT_COLOR,
-                fontSize: 20,
+                fontSize: this.state.isFullScreen ? 23 : 20,
             },
             videoSlider: {
                 flex: 1,
@@ -393,7 +393,7 @@ export default class TomatoxVideo extends React.Component<{
             },
             videoFullScreen: {
                 color: TOMATOX_THEME.FONT_COLOR,
-                fontSize: 18,
+                fontSize: this.state.isFullScreen ? 21 : 18,
                 marginLeft: 10,
             },
         });
