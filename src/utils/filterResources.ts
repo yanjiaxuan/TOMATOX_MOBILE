@@ -7,7 +7,7 @@ export function filterResource(resource: any): IPlayResource {
     if (resource.dl && resource.dl[0] && resource.dl[0].dd && resource.dl[0].dd[0]) {
         const dd = resource.dl[0].dd[0]
         if (dd instanceof Array) {
-            const videoList = dd.filter(item => item.$.flag && item.$.flag.includes('m3u8'))
+            const videoList = dd.filter(item => item.$.flag && (item.$.flag.includes('m3u8') || item.$.flag.includes('mp4')))
             videoList.length && (listStr = videoList[0]._)
         } else {
             listStr = dd._
@@ -40,8 +40,7 @@ function filterPlayList(listStr: string) {
         index: [],
         mapper: {},
     };
-
-    const splitLists = listStr.split('$$$').filter(val => val.includes('.m3u'));
+    const splitLists = listStr.split('$$$').filter(val => val.includes('.m3u') || val.includes('.mp4'));
     if (splitLists.length) {
         splitLists[0].split('#').forEach(item => {
             const [key, val] = item.split('$');

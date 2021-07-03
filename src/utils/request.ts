@@ -7,8 +7,42 @@
 // at：输出格式，可选xml
 
 import constants from './constants';
-import {filterResources} from "./filterResources";
-const parseXML = require('react-native-xml2js').parseString
+import {filterResources} from './filterResources';
+const parseXML = require('react-native-xml2js').parseString;
+let SEARCH_INDEX: Record<string, number> = {};
+fetch(constants.DEFAULT_SEARCH_INDEX).then(res => res.json()).then(res => {
+    SEARCH_INDEX = res as any;
+});
+
+export function querySearchRes(curPage: number, keyword: string) {
+    return new Promise((resolve) => {
+        const result: {pagecount: number, list: IPlayResource[]} = { pagecount: 1, list: [] };
+        const targetIds: number[] = [];
+        for (let key in SEARCH_INDEX) {
+            if (key.indexOf(keyword) >= 0) {
+                targetIds.push(SEARCH_INDEX[key]);
+            }
+        }
+        if (targetIds.length === 0) {
+            resolve(result);
+        }
+        fetch(`${constants.DEFAULT_ORIGIN}?ac=videolist&pg=${curPage}&ids=${targetIds.join(',')}`).then(res => res.text()).then(res => {
+            parseXML(res, (err: Error, data:any) => {
+                const jsonData = data.rss || data;
+                if (jsonData.list && jsonData.list[0] && jsonData.list[0].video) {
+                    const { pagecount } = jsonData.list[0].$;
+                    result.pagecount = pagecount;
+                    const videoList =
+                        jsonData.list[0].video instanceof Array
+                            ? jsonData.list[0].video
+                            : [jsonData.list[0].video];
+                    result.list.push(...filterResources(videoList));
+                }
+                resolve(result);
+            });
+        });
+    });
+}
 
 export function queryResources(
     curPage: number,
@@ -22,18 +56,18 @@ export function queryResources(
                 .then(res => res.text())
                 .then(res => {
                     parseXML(res, (err: Error, data:any) => {
-                        const jsonData = data.rss || data
+                        const jsonData = data.rss || data;
                         if (jsonData.list && jsonData.list[0] && jsonData.list[0].video) {
-                            const { pagecount } = jsonData.list[0].$
+                            const { pagecount } = jsonData.list[0].$;
                             const videoList =
                                 jsonData.list[0].video instanceof Array
                                     ? jsonData.list[0].video
-                                    : [jsonData.list[0].video]
-                            resolve({ pagecount, list: filterResources(videoList) })
+                                    : [jsonData.list[0].video];
+                            resolve({ pagecount, list: filterResources(videoList) });
                         }
-                        resolve({pagecount: 0, list: []})
-                    })
-                    resolve({pagecount: 0, list: []})
+                        resolve({pagecount: 0, list: []});
+                    });
+                    resolve({pagecount: 0, list: []});
                 }, () => {resolve({pagecount: 0, list: []});})
                 .catch(() => resolve({pagecount: 0, list: []}));
         } catch (e) {
@@ -50,13 +84,13 @@ export function queryTypes() {
                 .then(res => res.text())
                 .then(res => {
                     parseXML(res, (err: Error, data: any) => {
-                        const jsonData = data.rss || data
-                        const result: any = []
+                        const jsonData = data.rss || data;
+                        const result: any = [];
                         jsonData.class[0].ty.forEach((item: any) => {
-                            result.push({id: item.$.id, name: item._})
-                        })
-                        resolve(result)
-                    })
+                            result.push({id: item.$.id, name: item._});
+                        });
+                        resolve(result);
+                    });
                 }, () => {resolve([]);})
                 .catch(() => resolve([]));
         } catch (e) {
@@ -75,15 +109,15 @@ export function queryLive() {
                     const result: ILiveResource[] = [];
                     (res as ILiveResource[]).forEach(item =>{
                         if (!keys.has(item.sourceName)) {
-                            result.push(item)
-                            keys.add(item.sourceName)
+                            result.push(item);
+                            keys.add(item.sourceName);
                         }
-                    })
-                    resolve(result)
+                    });
+                    resolve(result);
                 }, () => resolve([]))
-                .catch(() => resolve([]))
+                .catch(() => resolve([]));
         } catch (e) {
-            resolve([])
+            resolve([]);
         }
-    })
+    });
 }
