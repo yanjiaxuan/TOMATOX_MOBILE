@@ -10,9 +10,29 @@ import constants from './constants';
 import {filterResources} from './filterResources';
 const parseXML = require('react-native-xml2js').parseString;
 let SEARCH_INDEX: Record<string, number> = {};
-fetch(constants.DEFAULT_SEARCH_INDEX).then(res => res.json()).then(res => {
-    SEARCH_INDEX = res as any;
-});
+const ua = {
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36 Edg/90.0.818.66'
+}
+const customFetch = function(input: RequestInfo, init?: RequestInit): Promise<Response> {
+    if (typeof input === 'string') {
+        if (init) {
+            init.headers = ua
+            return fetch(input, init)
+        } else {
+            return fetch(input, { headers: ua })
+        }
+    } else {
+        return fetch(input, { headers: ua })
+    }
+}
+
+export function querySearchIndex() {
+    customFetch(constants.DEFAULT_SEARCH_INDEX).then(res => {
+        return res.json()
+    }).then(res => {
+        SEARCH_INDEX = res as any;
+    });
+}
 
 export function querySearchRes(curPage: number, keyword: string) {
     return new Promise((resolve) => {
@@ -26,7 +46,7 @@ export function querySearchRes(curPage: number, keyword: string) {
         if (targetIds.length === 0) {
             resolve(result);
         }
-        fetch(`${constants.DEFAULT_ORIGIN}?ac=videolist&pg=${curPage}&ids=${targetIds.join(',')}`).then(res => res.text()).then(res => {
+        customFetch(`${constants.DEFAULT_ORIGIN}?ac=videolist&pg=${curPage}&ids=${targetIds.join(',')}`).then(res => res.text()).then(res => {
             parseXML(res, (err: Error, data:any) => {
                 const jsonData = data.rss || data;
                 if (jsonData.list && jsonData.list[0] && jsonData.list[0].video) {
@@ -52,7 +72,7 @@ export function queryResources(
 ): any {
     return new Promise(resolve => {
         try {
-            fetch(`${constants.DEFAULT_ORIGIN}?ac=videolist${curPage ? '&pg=' + curPage : ''}${type ? '&t=' + type : ''}${keyWord ? '&wd=' + keyWord : ''}${lastUpdate ? '&h=' + lastUpdate : ''}`)
+            customFetch(`${constants.DEFAULT_ORIGIN}?ac=videolist${curPage ? '&pg=' + curPage : ''}${type ? '&t=' + type : ''}${keyWord ? '&wd=' + keyWord : ''}${lastUpdate ? '&h=' + lastUpdate : ''}`)
                 .then(res => res.text())
                 .then(res => {
                     parseXML(res, (err: Error, data:any) => {
@@ -80,7 +100,7 @@ export function queryResources(
 export function queryTypes() {
     return new Promise<{id: number, name: string}[]>(resolve => {
         try {
-            fetch(constants.DEFAULT_ORIGIN)
+            customFetch(constants.DEFAULT_ORIGIN)
                 .then(res => res.text())
                 .then(res => {
                     parseXML(res, (err: Error, data: any) => {
@@ -102,7 +122,7 @@ export function queryTypes() {
 export function queryLive() {
     return new Promise(resolve => {
         try {
-            fetch(constants.IPTV_ORIGIN)
+            customFetch(constants.IPTV_ORIGIN, )
                 .then(res => res.json())
                 .then(res => {
                     const keys = new Set<string>();

@@ -1,21 +1,22 @@
 import React, {useEffect, useState} from 'react';
 import 'react-native-gesture-handler';
 import CustomContainer from './src/components/navigatior/custom-container';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import Orientation from 'react-native-orientation-locker';
 import {StatusBar, View} from 'react-native';
 import {TOMATOX_THEME} from './src/utils/theme';
 import initStorage from './src/utils/storage/storage';
+import {querySearchIndex} from './src/utils/request';
 
 Orientation.lockToPortrait();
 
 const App = () => {
-    const [isInit, setIsInit] = useState(false)
+    const [isInit, setIsInit] = useState(false);
     useEffect(() => {
+        querySearchIndex();
         initStorage().then(() => {
-            setIsInit(true)
-        })
-    }, [])
+            setIsInit(true);
+        });
+    }, []);
 
   return isInit ?
       <View style={{ flex:1, backgroundColor: TOMATOX_THEME.BACKGROUND_COLOR }}>
@@ -27,7 +28,7 @@ const App = () => {
               <CustomContainer />
           </View>
       </View> :
-      <></>
+      <></>;
 };
 
 export default App;
